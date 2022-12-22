@@ -1,0 +1,263 @@
+services:
+
+  #
+  # Media Content Services
+  #
+
+  # Plex Media Server (https://plex.tv)
+  plex-server:
+    image: plexinc/pms-docker
+    container_name: plex-server
+    environment:
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+      - PLEX_CLAIM=${HTPC_PLEX_CLAIM}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/config:/config
+      - ${HTPC_CONFIG_DIR}/transcode:/transcode
+      - ${HTPC_DATA_DIR}:/data
+    ports:
+      - 32400:32400
+    restart: always
+    networks:
+      - public-media
+
+  # Jellyfin (https://jellyfin.org)
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+      - JELLYFIN_PublishedServerUrl=${HTPC_JELLYFIN_URL} #optional
+    volumes:
+      - ${HTPC_CONFIG_DIR}/jellyfin:/config
+      - ${HTPC_DATA_DIR}/TV:/data/tvshows
+      - ${HTPC_DATA_DIR}/Movies:/data/movies
+    ports:
+      - 8096:8096
+      - 8920:8920 #optional
+      - 7359:7359/udp #optional
+      - 1900:1900/udp #optional
+    restart: always
+    networks:
+      - public-media
+
+  #
+  # Media Content Management Tools
+  #
+
+  # Plex Meta Manager ()
+  #   Media metadata, collections, and playlists organizer
+  plex-meta-manager:
+    image: lscr.io/linuxserver/plex-meta-manager:latest
+    container_name: plex-meta-manager
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+      - PMM_CONFIG=/config/config.yml #optional
+      - PMM_TIME=03:00 #optional
+      - PMM_RUN=False #optional
+      - PMM_TEST=False #optional
+      - PMM_NO_MISSING=False #optional
+    volumes:
+      - ${HTPC_CONFIG_DIR}/plex-meta-manager:/config
+    restart: always
+    networks:
+      - public-media
+
+  # Unmanic ()
+  #   Media optimizer
+  unmanic:
+    container_name: unmanic
+    image: josh5/unmanic:latest
+    ports:
+      - 8888:8888
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/unmanic:/config
+      - ${HTPC_DATA_DIR}:/library
+      - ${HTPC_WORK_DIR}/unmanic:/tmp/unmanic
+
+  # Prowlarr (https://github.com/Prowlarr/Prowlarr)
+  #   UseNet & Torrent indexer proxy and management
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:develop
+    container_name: prowlarr
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/prowlarr:/config
+    ports:
+      - 9696:9696
+    restart: always
+    networks:
+      - public-media
+
+  # Bazarr ()
+  #   Subtitle Management
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/bazarr:/config
+      - ${HTPC_DATA_DIR}/Movies:/movies #optional
+      - ${HTPC_DATA_DIR}/TV:/tv #optional
+    ports:
+      - 6767:6767
+    restart: always
+    networks:
+      - public-media
+
+  # Lidarr ()
+  #   Music Media Management
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/lidarr:/config
+      - ${HTPC_DATA_DIR}/Music:/music #optional
+      - ${HTPC_WORK_DIR}/downloads:/downloads #optional
+    ports:
+      - 8686:8686
+    restart: always
+    networks:
+      - public-media
+
+  # Sonarr (https://sonarr.tv)
+  #   Tv Show Media Management
+  sonarr:
+    image: linuxserver/sonarr
+    container_name: sonarr
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+      - UMASK_SET=022 #optional
+    volumes:
+      - ${HTPC_CONFIG_DIR}/sonarr:/config
+      - ${HTPC_DATA_DIR}/TV:/tv
+      - ${HTPC_WORK_DIR}/downloads:/downloads
+      - ${HTPC_WORK_DIR}/incomplete-downloads:/incomplete-downloads
+    ports:
+      - 8989:8989
+    restart: always
+    networks:
+      - public-media
+
+  # Radarr (https://radarr.video)
+  #   Tv Show Media Management
+  radarr:
+    image: linuxserver/radarr
+    container_name: radarr
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+      - UMASK_SET=022 #optional
+    volumes:
+      - ${HTPC_CONFIG_DIR}/radarr:/config
+      - ${HTPC_DATA_DIR}/Movies:/movies
+      - ${HTPC_WORK_DIR}/downloads:/downloads
+      - ${HTPC_WORK_DIR}/incomplete-downloads:/incomplete-downloads
+    ports:
+      - 7878:7878
+    restart: always
+    networks:
+      - public-media
+
+  # SABnzbd ()
+  #   Usenet Media Downloader
+  sabnzbd:
+    image: linuxserver/sabnzbd
+    container_name: sabnzbd
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/sabnzbd:/config
+      - ${HTPC_WORK_DIR}/downloads:/downloads
+      - ${HTPC_WORK_DIR}/incomplete-downloads:/incomplete-downloads
+    ports:
+      - 8080:8080
+      - 9090:9090
+    restart: always
+    networks:
+      - public-media
+
+  # Deluge ()
+  #   Torrent Media Downloader
+  deluge:
+    image: sgtsquiggs/deluge-pia:latest
+    container_name: deluge
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+      - DELUGE_LOGLEVEL=error
+      - PIA_SERVER=${HTPC_PIA_SERVER:-nl_amsterdam}
+      - MAX_LATENCY=0.05
+      - PIA_USER=${HTPC_PIA_USER}
+      - PIA_PASS=${HTPC_PIA_PASS}
+      - PIA_MODE=${HTPC_PIA_SERVER:-openvpn_tcp_standard}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/deluge:/config
+      - ${HTPC_WORK_DIR}/downloads:/downloads
+    ports:
+      - 8112:8112
+      - 6881:6881
+      - 6881:6881/udp
+    restart: always
+    networks:
+      - public-media
+
+  # Jellyseerr ()
+  #   Media Request Service
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    ports:
+      - 5055:5055
+    volumes:
+      - ${HTPC_CONFIG_DIR}/jellyseerr:/app/config
+    restart: always
+    networks:
+      - public-media
+
+  # Tautulli ()
+  #   Plex Media management and monitoring service
+  tautulli:
+    image: tautulli/tautulli
+    container_name: tautulli
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/tautulli:/config
+      - ${HTPC_CONFIG_DIR}/config/logs:/plex_logs:ro
+    ports:
+      - 8181:8181
+    restart: always
+
+networks:
+  public-media:
+    driver: host
+
