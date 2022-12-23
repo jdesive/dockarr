@@ -202,23 +202,34 @@ services:
   # Deluge ()
   #   Torrent Media Downloader
   deluge:
-    image: sgtsquiggs/deluge-pia:latest
+    image: binhex/arch-delugevpn:latest
     container_name: deluge
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
     environment:
       - PUID=${HTPC_PUID:-1000}
       - PGID=${HTPC_PGID:-1000}
-      - TZ=${HTPC_TIMEZONE:-America/Chicago}
-      - DELUGE_LOGLEVEL=error
-      - PIA_SERVER=${HTPC_PIA_SERVER:-nl_amsterdam}
-      - MAX_LATENCY=0.05
-      - PIA_USER=${HTPC_PIA_USER}
-      - PIA_PASS=${HTPC_PIA_PASS}
-      - PIA_MODE=${HTPC_PIA_SERVER:-openvpn_tcp_standard}
+      - VPN_ENABLED=yes
+      - VPN_USER=${HTPC_PIA_USER}
+      - VPN_PASS=${HTPC_PIA_PASS}
+      - VPN_PROV=pia
+      - VPN_CLIENT=openvpn
+      - STRICT_PORT_FORWARD=yes
+      - ENABLE_PRIVOXY=yes
+      - LAN_NETWORK=${HTPC_VPN_NETWORK:-192.168.1.0/24}
+      - NAME_SERVERS=1.1.1.1,1.0.0.1
+      - DELUGE_DAEMON_LOG_LEVEL=info
+      - DELUGE_WEB_LOG_LEVEL=info
+      - VPN_INPUT_PORTS=1234
+      - VPN_OUTPUT_PORTS=502
+      - DEBUG=false
     volumes:
       - ${HTPC_CONFIG_DIR}/deluge:/config
       - ${HTPC_WORK_DIR}/downloads:/downloads
     ports:
       - 8112:8112
+      - 8118:8118
       - 6881:6881
       - 6881:6881/udp
     restart: always

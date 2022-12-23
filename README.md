@@ -24,7 +24,7 @@ These scripts will handle setting up all of the folders, permissions, network, a
 - [Plex](https://plex.tv) | https://localhost:32400/web
 - [Jellyfin](https://jellyfin.org/) | http://localhost:8096
 - [SABnzbd](https://sabnzbd.org/) | http://localhost:8080
-- [Prowlarr](https://github.com/Prowlarr/Prowlarr) | http://localhost:9117
+- [Prowlarr](https://github.com/Prowlarr/Prowlarr) | http://localhost:9696
 - [Sonarr](https://sonarr.tv/) | http://localhost:8989
 - [Radarr](https://radarr.video/) | http://localhost:7878
 - [Unmanic]() | http://localhost:8888
@@ -32,6 +32,7 @@ These scripts will handle setting up all of the folders, permissions, network, a
 - [Bazarr]() | http://localhost:6767
 - [Lidarr]() | http://localhost:8686
 - [Jellyseerr]() | http://localhost:5055
+- [Deluge]() | http://localhost:8112
 
 # Environment Variables
 - HTPC_CONFIG_DIR | Central configuration directory 
@@ -44,3 +45,4 @@ These scripts will handle setting up all of the folders, permissions, network, a
 - HTPC_PIA_USER | Deluge Private Internet Access User
 - HTPC_PIA_PASS | Deluge Private Internet Access User Password
 - HTPC_PIA_MODE | `openvpn_tcp_standard` | Deluge Private Internet Access Mode
+- HTPC_VPN_NETWORK | `192.168.1.0/24` | OpenVPN host network for VPN
