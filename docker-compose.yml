@@ -267,6 +267,8 @@ services:
     ports:
       - 8181:8181
     restart: always
+    networks:
+      - public-media
 
 networks:
   public-media:
