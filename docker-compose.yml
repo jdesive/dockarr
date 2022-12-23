@@ -210,9 +210,9 @@ services:
     environment:
       - PUID=${HTPC_PUID:-1000}
       - PGID=${HTPC_PGID:-1000}
-      - VPN_ENABLED=yes
-      - VPN_USER=${HTPC_PIA_USER}
-      - VPN_PASS=${HTPC_PIA_PASS}
+      - VPN_ENABLED=${HTPC_VPN_ENABLED:-yes}
+      - VPN_USER=${HTPC_VPN_USER}
+      - VPN_PASS=${HTPC_VPN_PASS}
       - VPN_PROV=pia
       - VPN_CLIENT=openvpn
       - STRICT_PORT_FORWARD=yes

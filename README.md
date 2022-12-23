@@ -40,9 +40,19 @@ These scripts will handle setting up all of the folders, permissions, network, a
 - HTPC_WORK_DIR | Parent Temporary Directory
 - HTPC_PGID | `1000` | Group ID
 - HTPC_PUID | `1000` | User ID
-- HTPC_TIMEZONE | `America/Chicago` | Timezone 
-- HTPC_PIA_SERVER | `nl_amsterdam` | Deluge Private Internet Access Server
-- HTPC_PIA_USER | Deluge Private Internet Access User
-- HTPC_PIA_PASS | Deluge Private Internet Access User Password
-- HTPC_PIA_MODE | `openvpn_tcp_standard` | Deluge Private Internet Access Mode
+- HTPC_TIMEZONE | `America/Chicago` | Timezone
+- HTPC_VPN_USER | Deluge OpenVPN User
+- HTPC_VPN_PASS | Deluge OpenVPN Password
 - HTPC_VPN_NETWORK | `192.168.1.0/24` | OpenVPN host network for VPN
+- HTPC_VPN_ENABLED | `yes` | Enabled VPN on deluge
+
+# Getting started
+First you will need to add your desired configuration via environment variables to your user on the host machine. 
+
+Example:  
+`export HTPC_CONFIG_DIR=<your path to configs>`
+
+Once configuration is complete you can run the docker compose file:  
+`docker compose up -d`
+
+Now you can move to configuring the individual services via the links above in 'Service Links' section.
