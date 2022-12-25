@@ -198,8 +198,6 @@ services:
     image: binhex/arch-delugevpn:latest
     container_name: deluge
     privileged: true
-    sysctls:
-      - "net.ipv4.conf.all.src_valid_mark=1"
     cap_add:
       - SYS_ADMIN
     environment:
