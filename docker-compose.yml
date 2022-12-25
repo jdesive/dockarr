@@ -226,7 +226,6 @@ services:
       - 6881:6881
       - 6881:6881/udp
     restart: always
-    network_mode: host
 
   # Jellyseerr ()
   #   Media Request Service
