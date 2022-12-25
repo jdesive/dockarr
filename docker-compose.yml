@@ -207,7 +207,7 @@ services:
       - VPN_USER=${HTPC_VPN_USER}
       - VPN_PASS=${HTPC_VPN_PASS}
       - VPN_PROV=${HTPC_VPN_PROV:-pia}
-      - VPN_CLIENT=openvpn
+      - VPN_CLIENT=${HTPC_VPN_CLIENT:-openvpn}
       - STRICT_PORT_FORWARD=yes
       - ENABLE_PRIVOXY=yes
       - LAN_NETWORK=${HTPC_VPN_NETWORK:-192.168.1.0/24}
