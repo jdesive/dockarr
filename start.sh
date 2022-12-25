@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "Setting configuration environment variables"
 export "$(xargs < .env)"
