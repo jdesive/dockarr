@@ -18,8 +18,7 @@ services:
     ports:
       - 32400:32400
     restart: always
-    networks:
-      - public-media
+    network_mode: host
 
   # Jellyfin (https://jellyfin.org)
   jellyfin:
@@ -40,8 +39,7 @@ services:
       - 7359:7359/udp #optional
       - 1900:1900/udp #optional
     restart: always
-    networks:
-      - public-media
+    network_mode: host
 
   #
   # Media Content Management Tools
@@ -64,8 +62,7 @@ services:
     volumes:
       - ${HTPC_CONFIG_DIR}/plex-meta-manager:/config
     restart: always
-    networks:
-      - public-media
+    network_mode: host
 
   # Unmanic ()
   #   Media optimizer
@@ -81,6 +78,8 @@ services:
       - ${HTPC_CONFIG_DIR}/unmanic:/config
       - ${HTPC_DATA_DIR}:/library
       - ${HTPC_WORK_DIR}/unmanic:/tmp/unmanic
+    network_mode: host
+    restart: always
 
   # Prowlarr (https://github.com/Prowlarr/Prowlarr)
   #   UseNet & Torrent indexer proxy and management
@@ -96,8 +95,7 @@ services:
     ports:
       - 9696:9696
     restart: always
-    networks:
-      - public-media
+    network_mode: host
 
   # Bazarr ()
   #   Subtitle Management
@@ -115,8 +113,7 @@ services:
     ports:
       - 6767:6767
     restart: always
-    networks:
-      - public-media
+    network_mode: host
 
   # Lidarr ()
   #   Music Media Management
@@ -134,8 +131,7 @@ services:
     ports:
       - 8686:8686
     restart: always
-    networks:
-      - public-media
+    network_mode: host
 
   # Sonarr (https://sonarr.tv)
   #   Tv Show Media Management
@@ -155,8 +151,7 @@ services:
     ports:
       - 8989:8989
     restart: always
-    networks:
-      - public-media
+    network_mode: host
 
   # Radarr (https://radarr.video)
   #   Tv Show Media Management
@@ -176,8 +171,7 @@ services:
     ports:
       - 7878:7878
     restart: always
-    networks:
-      - public-media
+    network_mode: host
 
   # SABnzbd ()
   #   Usenet Media Downloader
@@ -196,8 +190,7 @@ services:
       - 8080:8080
       - 9090:9090
     restart: always
-    networks:
-      - public-media
+    network_mode: host
 
   # Deluge ()
   #   Torrent Media Downloader
@@ -233,8 +226,7 @@ services:
       - 6881:6881
       - 6881:6881/udp
     restart: always
-    networks:
-      - public-media
+    network_mode: host
 
   # Jellyseerr ()
   #   Media Request Service
@@ -249,8 +241,7 @@ services:
     volumes:
       - ${HTPC_CONFIG_DIR}/jellyseerr:/app/config
     restart: always
-    networks:
-      - public-media
+    network_mode: host
 
   # Tautulli ()
   #   Plex Media management and monitoring service
@@ -267,10 +258,5 @@ services:
     ports:
       - 8181:8181
     restart: always
-    networks:
-      - public-media
-
-networks:
-  public-media:
-    driver: host
+    network_mode: host
 

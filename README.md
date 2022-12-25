@@ -20,7 +20,7 @@ These scripts will handle setting up all of the folders, permissions, network, a
 - **Prowlarr**: Prowlarr is an indexer manager/proxy built on the popular arr .net/reactjs base stack to integrate with your various PVR apps  
 - **Deluge**: Torrent downloader tool
 
-# Service Links
+## Service Links
 - [Plex](https://plex.tv) | https://localhost:32400/web
 - [Jellyfin](https://jellyfin.org/) | http://localhost:8096
 - [SABnzbd](https://sabnzbd.org/) | http://localhost:8080
@@ -34,19 +34,23 @@ These scripts will handle setting up all of the folders, permissions, network, a
 - [Jellyseerr]() | http://localhost:5055
 - [Deluge]() | http://localhost:8112
 
-# Environment Variables
+## Environment Variables
+
+### Required
 - HTPC_CONFIG_DIR | Central configuration directory 
 - HTPC_DATA_DIR | Media Parent Directory
 - HTPC_WORK_DIR | Parent Temporary Directory
+- HTPC_VPN_USER | Deluge OpenVPN User
+- HTPC_VPN_PASS | Deluge OpenVPN Password
+
+### Optional
 - HTPC_PGID | `1000` | Group ID
 - HTPC_PUID | `1000` | User ID
 - HTPC_TIMEZONE | `America/Chicago` | Timezone
-- HTPC_VPN_USER | Deluge OpenVPN User
-- HTPC_VPN_PASS | Deluge OpenVPN Password
 - HTPC_VPN_NETWORK | `192.168.1.0/24` | OpenVPN host network for VPN
 - HTPC_VPN_ENABLED | `yes` | Enabled VPN on deluge
 
-# Getting started
+## Getting started
 First you will need to add your desired configuration via environment variables to your user on the host machine. 
 
 Example:  
