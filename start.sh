@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "Setting configuration environment variables"
-export "$(xargs < .env)"
+. .env
 echo "Configuration complete"
 
 docker compose up -d
