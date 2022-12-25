@@ -20,27 +20,6 @@ services:
     restart: always
     network_mode: host
 
-  # Jellyfin (https://jellyfin.org)
-  jellyfin:
-    image: lscr.io/linuxserver/jellyfin:latest
-    container_name: jellyfin
-    environment:
-      - PUID=${HTPC_PUID:-1000}
-      - PGID=${HTPC_PGID:-1000}
-      - TZ=${HTPC_TIMEZONE:-America/Chicago}
-      - JELLYFIN_PublishedServerUrl=${HTPC_JELLYFIN_URL} #optional
-    volumes:
-      - ${HTPC_CONFIG_DIR}/jellyfin:/config
-      - ${HTPC_DATA_DIR}/TV:/data/tvshows
-      - ${HTPC_DATA_DIR}/Movies:/data/movies
-    ports:
-      - 8096:8096
-      - 8920:8920 #optional
-      - 7359:7359/udp #optional
-      - 1900:1900/udp #optional
-    restart: always
-    network_mode: host
-
   #
   # Media Content Management Tools
   #
@@ -229,16 +208,17 @@ services:
 
   # Jellyseerr ()
   #   Media Request Service
-  jellyseerr:
-    image: fallenbagel/jellyseerr:latest
-    container_name: jellyseerr
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:latest
+    container_name: overseerr
     environment:
-      - LOG_LEVEL=debug
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
       - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/overseerr:/config
     ports:
       - 5055:5055
-    volumes:
-      - ${HTPC_CONFIG_DIR}/jellyseerr:/app/config
     restart: always
     network_mode: host
 

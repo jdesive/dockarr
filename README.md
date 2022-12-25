@@ -22,7 +22,6 @@ These scripts will handle setting up all the folders, permissions, network, and 
 
 ## Service Links
 - [Plex](https://plex.tv) | http://localhost:32400/web
-- [Jellyfin](https://jellyfin.org/) | http://localhost:8096
 - [SABnzbd](https://sabnzbd.org/) | http://localhost:8080
 - [Prowlarr](https://github.com/Prowlarr/Prowlarr) | http://localhost:9696
 - [Sonarr](https://sonarr.tv/) | http://localhost:8989
