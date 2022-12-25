@@ -11,6 +11,7 @@ export HTPC_PGID="1000"
 export HTPC_PUID="1000"
 export HTPC_TIMEZONE="America/Chicago"
 export HTPC_VPN_NETWORK="192.168.1.0/24"
+export HTPC_VPN_PROV="pia"
 echo "Configuration complete"
 
 docker compose up -d
