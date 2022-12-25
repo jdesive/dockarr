@@ -197,8 +197,10 @@ services:
   deluge:
     image: binhex/arch-delugevpn:latest
     container_name: deluge
+    privileged: true
+    sysctls:
+      - "net.ipv4.conf.all.src_valid_mark=1"
     cap_add:
-      - NET_ADMIN
       - SYS_ADMIN
     environment:
       - PUID=${HTPC_PUID:-1000}
@@ -206,7 +208,7 @@ services:
       - VPN_ENABLED=${HTPC_VPN_ENABLED:-yes}
       - VPN_USER=${HTPC_VPN_USER}
       - VPN_PASS=${HTPC_VPN_PASS}
-      - VPN_PROV=pia
+      - VPN_PROV=${HTPC_VPN_PROV:-pia}
       - VPN_CLIENT=openvpn
       - STRICT_PORT_FORWARD=yes
       - ENABLE_PRIVOXY=yes

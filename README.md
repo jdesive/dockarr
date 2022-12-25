@@ -50,6 +50,7 @@ These scripts will handle setting up all the folders, permissions, network, and 
 - HTPC_TIMEZONE | `America/Chicago` | Timezone
 - HTPC_VPN_NETWORK | `192.168.1.0/24` | OpenVPN host network for VPN
 - HTPC_VPN_ENABLED | `yes` | Enabled VPN on deluge
+- HTPC_VPN_PROV | `pia` | VPN provider ("airvpn", "pia", "wireguard")
 
 ## Getting started
 First you will need to add your desired configuration via environment variables to your user on the host machine. 
