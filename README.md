@@ -1,7 +1,7 @@
 # Plex Docker
 This repository houses a few docker-compose scripts that make getting the following services up and running quickly and easily! 
 
-These scripts will handle setting up all of the folders, permissions, network, and services for a dockerized HTPC system. You will still need to configure the services after installation. 
+These scripts will handle setting up all the folders, permissions, network, and services for a dockerized HTPC system. You will still need to configure the services after installation. 
 
 ## Services
 
@@ -21,7 +21,7 @@ These scripts will handle setting up all of the folders, permissions, network, a
 - **Deluge**: Torrent downloader tool
 
 ## Service Links
-- [Plex](https://plex.tv) | https://localhost:32400/web
+- [Plex](https://plex.tv) | http://localhost:32400/web
 - [Jellyfin](https://jellyfin.org/) | http://localhost:8096
 - [SABnzbd](https://sabnzbd.org/) | http://localhost:8080
 - [Prowlarr](https://github.com/Prowlarr/Prowlarr) | http://localhost:9696
@@ -42,6 +42,7 @@ These scripts will handle setting up all of the folders, permissions, network, a
 - HTPC_WORK_DIR | Parent Temporary Directory
 - HTPC_VPN_USER | Deluge OpenVPN User
 - HTPC_VPN_PASS | Deluge OpenVPN Password
+- HTPC_PLEX_CLAIM | Plex TV Claim (https://plex.tv/claim)
 
 ### Optional
 - HTPC_PGID | `1000` | Group ID
