@@ -30,7 +30,7 @@ These scripts will handle setting up all the folders, permissions, network, and 
 - [Tautulli]() | http://localhost:8181
 - [Bazarr]() | http://localhost:6767
 - [Lidarr]() | http://localhost:8686
-- [Jellyseerr]() | http://localhost:5055
+- [Overseerr]() | http://localhost:5055
 - [Deluge]() | http://localhost:8112
 
 ## Environment Variables

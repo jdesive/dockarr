@@ -4,6 +4,20 @@ services:
   # Media Content Services
   #
 
+  nginx-proxy-manager:
+    container_name: nginx-proxy-manager
+    image: jc21/nginx-proxy-manager:latest
+    volumes:
+      - ${HTPC_CONFIG_DIR}/nginx:/data
+      - ${HTPC_CONFIG_DIR}/certs:/etc/letsencrypt
+    ports:
+      - "80:80"
+      - "81:81"
+      - "443:443"
+    restart: always
+    networks:
+      - htpc-backend
+
   # Plex Media Server (https://plex.tv)
   plex-server:
     image: plexinc/pms-docker
@@ -18,7 +32,8 @@ services:
     ports:
       - 32400:32400
     restart: always
-    network_mode: host
+    networks:
+      - htpc-backend
 
   #
   # Media Content Management Tools
@@ -41,7 +56,6 @@ services:
     volumes:
       - ${HTPC_CONFIG_DIR}/plex-meta-manager:/config
     restart: always
-    network_mode: host
 
   # Unmanic ()
   #   Media optimizer
@@ -57,8 +71,9 @@ services:
       - ${HTPC_CONFIG_DIR}/unmanic:/config
       - ${HTPC_DATA_DIR}:/library
       - ${HTPC_WORK_DIR}/unmanic:/tmp/unmanic
-    network_mode: host
     restart: always
+    networks:
+      - htpc-backend
 
   # Prowlarr (https://github.com/Prowlarr/Prowlarr)
   #   UseNet & Torrent indexer proxy and management
@@ -74,7 +89,8 @@ services:
     ports:
       - 9696:9696
     restart: always
-    network_mode: host
+    networks:
+      - htpc-backend
 
   # Bazarr ()
   #   Subtitle Management
@@ -92,7 +108,8 @@ services:
     ports:
       - 6767:6767
     restart: always
-    network_mode: host
+    networks:
+      - htpc-backend
 
   # Lidarr ()
   #   Music Media Management
@@ -110,7 +127,8 @@ services:
     ports:
       - 8686:8686
     restart: always
-    network_mode: host
+    networks:
+      - htpc-backend
 
   # Sonarr (https://sonarr.tv)
   #   Tv Show Media Management
@@ -130,7 +148,8 @@ services:
     ports:
       - 8989:8989
     restart: always
-    network_mode: host
+    networks:
+      - htpc-backend
 
   # Radarr (https://radarr.video)
   #   Tv Show Media Management
@@ -150,7 +169,8 @@ services:
     ports:
       - 7878:7878
     restart: always
-    network_mode: host
+    networks:
+      - htpc-backend
 
   # SABnzbd ()
   #   Usenet Media Downloader
@@ -169,7 +189,8 @@ services:
       - 8080:8080
       - 9090:9090
     restart: always
-    network_mode: host
+    networks:
+      - htpc-backend
 
   # Deluge ()
   #   Torrent Media Downloader
@@ -205,8 +226,10 @@ services:
       - 6881:6881
       - 6881:6881/udp
     restart: always
+    networks:
+      - htpc-backend
 
-  # Jellyseerr ()
+  # Overseerr ()
   #   Media Request Service
   overseerr:
     image: lscr.io/linuxserver/overseerr:latest
@@ -220,7 +243,8 @@ services:
     ports:
       - 5055:5055
     restart: always
-    network_mode: host
+    networks:
+      - htpc-backend
 
   # Tautulli ()
   #   Plex Media management and monitoring service
@@ -237,5 +261,9 @@ services:
     ports:
       - 8181:8181
     restart: always
-    network_mode: host
+    networks:
+      - htpc-backend
 
+networks:
+  htpc-backend:
+    driver: bridge
