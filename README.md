@@ -81,3 +81,24 @@ Note: This will cause downtime for your HTPC, no services will be running during
 To delete the stack you just need to run the `stop.sh` script. This will stop and remove all services.
 
 Note: This does not remove media or configuration files for the HTPC.
+
+## Networking
+All services are provided on a docker bridge network with host port mapping for each service. This way you can configure each service by navigating to `http://<HTPC IP>:<service port>` in your browser.
+Provided is `nginx-proxy-manager` in order to allow external access in the system. This would be done by port forwarding port 80 to your HTPC and configuring the NGINX proxy to point to the backend services via their hostnames. 
+
+When configuring a service to connect to another service there are a few ways to do this. 
+
+1. (***Recommended***) Using the services hostname
+   1. The docker bridge network that all services are connected to, also modifies each services hosts file to provide nice hostnames for each service. For instance, if you need prowlarr to connect to sonarr, you would put in prowlarr for sonarr's ip just `sonarr` and docker will resolve that to the proper IP for sonarr. 
+2. Using the container IP
+   1. Using `docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container_name_or_id>` will return the ip address of any running docker container in the stack. Then you simply put this in when asked for an ip to the service. 
+3. Using the host IP
+   1. Because each service has a host port mapping, you can use the host machine ip address to access each service. This is highly discouraged as it creates network loops that are not required.
+      (Imagine going out your front door, into the garage, and then into the kitchen every time you want a snack)
+
+## Filesystem
+There are 3 main parent directories created by this repository. You can configure them in the `start.sh` script.
+
+- `/opt/htpc`: This is where all configuration, SSL certs, and various persistent settings are stored. (We suggest this be on your main drive, SSD)  
+- `/mnt/Media`: This is the Media parent directory. Here is where you Movies, TV Shows, Music, Photos, etc. are stored. (We suggest this be a mounted share from a NAS or SAN)  
+- `/tmp/htpc`: This is the working directory for all media. Files that are in the process of downloading or other various temp files are stored here. (We suggest this also be on your main drive, SSD)
