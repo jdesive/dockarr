@@ -246,6 +246,19 @@ services:
     networks:
       - htpc-backend
 
+  # Requestrr (https://github.com/darkalfx/requestrr)
+  #    Discord chat bot for Media Requests
+  requestrr:
+    image: darkalfx/requestrr:latest
+    container_name: requestrr
+    volumes:
+      - ${HTPC_CONFIG_DIR}/requestrr:/root/config
+    ports:
+      - 4545:4545
+    restart: always
+    networks:
+      - htpc-backend
+
   # Tautulli ()
   #   Plex Media management and monitoring service
   tautulli:
