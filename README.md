@@ -21,6 +21,8 @@ We are not legally responsible for any improper or illegal use of this repositor
 - **Deluge**: Torrent downloader tool
 - **Requestrr**: Requestrr is a chatbot used to simplify using services like Sonarr/Radarr/Overseerr/Ombi via the use of chat!
 - **Nginx-Proxy-Manager**: Expose web services on your network · Free SSL with Let's Encrypt · Designed with security in mind · Perfect for home networks
+- **Watchtower**: A container-based solution for automating Docker container base image updates
+- **Portainer**: Lightweight service delivery platform for containerized applications that can be used to manage Docker, Swarm, Kubernetes and ACI environments.
 
 ## Service Links
 - [Plex](https://plex.tv) | http://localhost:32400/web
@@ -36,6 +38,7 @@ We are not legally responsible for any improper or illegal use of this repositor
 - [Deluge](https://deluge-torrent.org/) | http://localhost:8112
 - [Requestrr](https://github.com/darkalfx/requestrr) | http://localhost:4545
 - [NGINX-proxy-manager](https://nginxproxymanager.com/) | http://localhost:81
+- [Portainer](https://www.portainer.io/) | http://localhost:9000
 
 ## Environment Variables
 
@@ -55,6 +58,11 @@ We are not legally responsible for any improper or illegal use of this repositor
 - HTPC_VPN_ENABLED | `yes` | Enabled VPN on deluge
 - HTPC_VPN_PROV | `pia` | VPN provider ("airvpn", "pia", "custom")
 - HTPC_VPN_CLIENT | `openvpn` | VPN client ("openvpn", "wireguard")
+
+### Management Settings
+- HTPC_UPDATE_CRON | `0 3 * * 6` | When to check for docker image updates (cron)
+- HTPC_DOCKER_SOCK | `/var/run/docker.sock` | The docker sock for access to docker (Watchtower)
+- HTPC_UPDATE_CLEANUP | `true` | Whether to clean old docker images after updates
 
 ## Getting started
 
