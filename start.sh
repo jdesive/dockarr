@@ -4,14 +4,8 @@ CONFIG_DIR=/opt/htpc
 CONFIG_FILE=$CONFIG_DIR/htpc.env
 
 load_dotenv(){
-  # https://stackoverflow.com/a/66118031/134904
-  set -a
-  # shellcheck disable=SC2039
-  export $(cat "$CONFIG_FILE" | sed -e '/^#/d;/^\s*$/d' -e "s/'/'\\\''/g" -e "s/=\(.*\)/='\1'/g")
-  set +a
+  export $(cat "$CONFIG_FILE" | sed -e /^$/d -e /^#/d | xargs)
 }
-
-
 
 if [ ! -x "$(command -v git)" ]; then
     echo "Git is not installed on your system. Running installing git..."
