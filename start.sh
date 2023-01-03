@@ -29,7 +29,8 @@ fi
 
 if [ ! -s "$CONFIG_FILE" ]; then
     echo "Moving template config file to config directory"
-    [ -f "htpc.env" ] && sudo cp htpc.env /opt/htpc/
+    [ -f "htpc.env" ] && sudo cp htpc.env "$CONFIG_DIR"
+    sudo chmod 775 "$CONFIG_FILE"
     echo "Please configure the file \'$CONFIG_FILE\' and re-run this script."
     exit 0
 fi
