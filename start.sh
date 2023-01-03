@@ -4,7 +4,7 @@ load_dotenv(){
   # https://stackoverflow.com/a/66118031/134904
   set -a
   # shellcheck disable=SC2039
-  . <(cat $1 | sed -e '/^#/d;/^\s*$/d' -e "s/'/'\\\''/g" -e "s/=\(.*\)/='\1'/g")
+  source $(cat $1 | sed -e '/^#/d;/^\s*$/d' -e "s/'/'\\\''/g" -e "s/=\(.*\)/='\1'/g")
   set +a
 }
 
@@ -29,7 +29,7 @@ fi
 
 if [ ! -s "$CONFIG_FILE" ]; then
     echo "Moving template config file to config directory"
-    [ -f "htpc.env" ] && cp htpc.env /opt/htpc/
+    [ -f "htpc.env" ] && sudo cp htpc.env /opt/htpc/
     echo "Please configure the file \'$CONFIG_FILE\' and re-run this script."
     exit 0
 fi

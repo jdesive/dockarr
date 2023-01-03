@@ -26,3 +26,6 @@ sudo systemctl enable containerd.service
 sudo groupadd docker
 sudo usermod -aG docker "$USER"
 newgrp docker
+
+sudo update-alternatives --install /usr/sbin/iptables iptables /usr/sbin/iptables-legacy 100
+sudo service docker start
