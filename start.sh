@@ -1,15 +1,17 @@
 #!/bin/sh
 
+CONFIG_DIR=/opt/htpc
+CONFIG_FILE=$CONFIG_DIR/htpc.env
+
 load_dotenv(){
   # https://stackoverflow.com/a/66118031/134904
   set -a
   # shellcheck disable=SC2039
-  source $(cat $1 | sed -e '/^#/d;/^\s*$/d' -e "s/'/'\\\''/g" -e "s/=\(.*\)/='\1'/g")
+  . $(cat "$CONFIG_FILE" | sed -e '/^#/d;/^\s*$/d' -e "s/'/'\\\''/g" -e "s/=\(.*\)/='\1'/g")
   set +a
 }
 
-CONFIG_DIR=/opt/htpc
-CONFIG_FILE=$CONFIG_DIR/htpc.env
+
 
 if [ ! -x "$(command -v git)" ]; then
     echo "Git is not installed on your system. Running installing git..."
@@ -36,7 +38,7 @@ if [ ! -s "$CONFIG_FILE" ]; then
 fi
 
 echo "Loading config file..."
-load_dotenv "/opt/htpc/htpc.env"
+load_dotenv "$CONFIG_FILE"
 
 echo "Setting execute permissions on helper scripts..."
 sudo chmod +x stop.sh
