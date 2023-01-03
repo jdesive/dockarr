@@ -7,7 +7,7 @@ load_dotenv(){
   # https://stackoverflow.com/a/66118031/134904
   set -a
   # shellcheck disable=SC2039
-  . $(cat "$CONFIG_FILE" | sed -e '/^#/d;/^\s*$/d' -e "s/'/'\\\''/g" -e "s/=\(.*\)/='\1'/g")
+  export $(cat "$CONFIG_FILE" | sed -e '/^#/d;/^\s*$/d' -e "s/'/'\\\''/g" -e "s/=\(.*\)/='\1'/g")
   set +a
 }
 
