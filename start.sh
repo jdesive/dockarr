@@ -1,22 +1,56 @@
 #!/bin/sh
 
-echo "Setting configuration environment variables"
-export HTPC_CONFIG_DIR="/opt/htpc"
-export HTPC_DATA_DIR="/mnt/Media"
-export HTPC_WORK_DIR="/tmp/htpc"
-export HTPC_VPN_ENABLED="yes"
-export HTPC_VPN_USER="exampleUser"
-export HTPC_VPN_PASS="examplePass"
-export HTPC_PGID="1000"
-export HTPC_PUID="1000"
-export HTPC_TIMEZONE="America/Chicago"
-export HTPC_VPN_NETWORK="192.168.1.0/24"
-export HTPC_PLEX_CLAIM=""
-export HTPC_VPN_PROV="pia"
-export HTPC_VPN_CLIENT="openvpn"
-export HTPC_UPDATE_CRON="0 3 * * 6"
-export HTPC_DOCKER_SOCK="/var/run/docker.sock"
-export HTPC_UPDATE_CLEANUP="true"
-echo "Configuration complete"
+load_dotenv(){
+  # https://stackoverflow.com/a/66118031/134904
+  set -a
+  # shellcheck disable=SC2039
+  . <(cat $1 | sed -e '/^#/d;/^\s*$/d' -e "s/'/'\\\''/g" -e "s/=\(.*\)/='\1'/g")
+  set +a
+}
 
+CONFIG_DIR=/opt/htpc
+CONFIG_FILE=$CONFIG_DIR/htpc.env
+
+if [ ! -x "$(command -v git)" ]; then
+    echo "Git is not installed on your system. Running installing git..."
+    sudo apt-get install git -y
+fi
+
+if [ ! -x "$(command -v docker)" ]; then
+    echo "Docker is not installed on your system. Running docker install script..."
+    sudo chmod +x docker_install.sh
+    . ./docker_install.sh
+fi
+
+if [ ! -d "$CONFIG_DIR" ]; then
+  echo "Creating HTPC config directory"
+  sudo mkdir -p $CONFIG_DIR
+fi
+
+if [ ! -s "$CONFIG_FILE" ]; then
+    echo "Moving template config file to config directory"
+    [ -f "htpc.env" ] && cp htpc.env /opt/htpc/
+    echo "Please configure the file \'$CONFIG_FILE\' and re-run this script."
+    exit 0
+fi
+
+echo "Loading config file..."
+load_dotenv "/opt/htpc/htpc.env"
+
+echo "Setting execute permissions on helper scripts..."
+sudo chmod +x stop.sh
+sudo chmod +x delete.sh
+sudo chmod +x update.sh
+
+echo "Starting HTPC docker stack"
 docker compose up -d
+
+echo "Changing permissions on data, working, and config directories..."
+sudo chmod 775 -R "$HTPC_CONFIG_DIR"
+sudo chmod 775 -R "$HTPC_DATA_DIR"
+sudo chmod 775 -R "$HTPC_WORK_DIR"
+sudo chown -R "$HTPC_PUID:$HTPC_GUID" "$HTPC_CONFIG_DIR"
+sudo chown -R "$HTPC_PUID:$HTPC_GUID" "$HTPC_DATA_DIR"
+sudo chown -R "$HTPC_PUID:$HTPC_GUID" "$HTPC_WORK_DIR"
+
+echo "Startup complete! Please refer to the README.md document for service links."

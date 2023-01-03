@@ -40,17 +40,14 @@ We are not legally responsible for any improper or illegal use of this repositor
 - [NGINX-proxy-manager](https://nginxproxymanager.com/) | http://localhost:81
 - [Portainer](https://www.portainer.io/) | http://localhost:9000
 
-## Environment Variables
+## Configuration
 
-### Required
-- HTPC_CONFIG_DIR | Central configuration directory 
-- HTPC_DATA_DIR | Media Parent Directory
-- HTPC_WORK_DIR | Parent Temporary Directory
-- HTPC_VPN_USER | Deluge OpenVPN User
-- HTPC_VPN_PASS | Deluge OpenVPN Password
-- HTPC_PLEX_CLAIM | Plex TV Claim (https://plex.tv/claim)
-
-### Optional
+- HTPC_CONFIG_DIR | `/opt/htpc` | Central configuration directory 
+- HTPC_DATA_DIR | `/mnt/Media` | Media Parent Directory
+- HTPC_WORK_DIR | `/opt/htpc/tmp` | Parent Temporary Directory
+- HTPC_VPN_USER | `exampleUser` | Deluge OpenVPN User
+- HTPC_VPN_PASS | `examplePass` | Deluge OpenVPN Password
+- HTPC_PLEX_CLAIM | `na` | Plex TV Claim (https://plex.tv/claim)
 - HTPC_PGID | `1000` | Group ID
 - HTPC_PUID | `1000` | User ID
 - HTPC_TIMEZONE | `America/Chicago` | Timezone
@@ -70,11 +67,20 @@ We are not legally responsible for any improper or illegal use of this repositor
 Ubuntu 22.04  
 
 ### First time setup
-First you will need to add your desired configuration via environment variables to your user on the host machine.
-Navigate to the `start.sh` file in this repository and modify the configuration section to your liking. You can view what each environment variable is for above.
 
-Once configuration is complete you can run the start script:
-`sudo chmod +x start.sh && ./start.sh`
+During first time setup, the `start.sh` script will install Git and Docker if not already installed and executable by the user. 
+The script will also copy a default configuration file to the `/opt/htpc` directory named `htpc.env` and stop executing. 
+You will need to configure this file to your specific setup (See above 'Configuration' section) and re-run the `start.sh` script. 
+These are one time setup steps, and will not be done again after initial setup. 
+
+After re-running the `start.sh` script, it will load in your configuration file and start the HTPC docker stack.
+
+### Starting the Stack
+To run the start script first execute:
+`sudo chmod +x start.sh`
+
+Then execute:
+`./start.sh`
 
 
 Now you can move to configuring the individual services via the links above in *Service Links* section above.
@@ -85,8 +91,12 @@ This will stop all services, update this repo, pull down new docker images if av
 
 Note: This will cause downtime for your HTPC, no services will be running during this process. 
 
+### Stopping the stack
+To stop the stack you can run the `stop.sh` script. This will simply just stop all the services in docker, you can then simply 
+run the `start.sh` script again to start the stack back up.
+
 ### Deleting the stack
-To delete the stack you just need to run the `stop.sh` script. This will stop and remove all services.
+To delete the stack you just need to run the `delete.sh` script. This will stop and remove all services.
 
 Note: This does not remove media or configuration files for the HTPC.
 
@@ -109,4 +119,4 @@ There are 3 main parent directories created by this repository. You can configur
 
 - `/opt/htpc`: This is where all configuration, SSL certs, and various persistent settings are stored. (We suggest this be on your main drive, SSD)  
 - `/mnt/Media`: This is the Media parent directory. Here is where you Movies, TV Shows, Music, Photos, etc. are stored. (We suggest this be a mounted share from a NAS or SAN)  
-- `/tmp/htpc`: This is the working directory for all media. Files that are in the process of downloading or other various temp files are stored here. (We suggest this also be on your main drive, SSD)
+- `/opt/htpc/tmp`: This is the working directory for all media. Files that are in the process of downloading or other various temp files are stored here. (We suggest this also be on your main drive, SSD)
