@@ -3,19 +3,24 @@
 CONFIG_DIR=/opt/htpc
 CONFIG_FILE=$CONFIG_DIR/htpc.env
 
-load_dotenv(){
-  export $(cat "$CONFIG_FILE" | sed -e /^$/d -e /^#/d | xargs)
+load_dotenv() {
+  env=${1:-.env}
+  [ ! -f "${env}" ] && {
+    echo "Env file ${env} doesn't exist"
+    return 1
+  }
+  eval $(sed -e '/^\s*$/d' -e '/^\s*#/d' -e 's/=/="/' -e 's/$/"/' -e 's/^/export /' "${env}")
 }
 
 if [ ! -x "$(command -v git)" ]; then
-    echo "Git is not installed on your system. Running installing git..."
-    sudo apt-get install git -y
+  echo "Git is not installed on your system. Running installing git..."
+  sudo apt-get install git -y
 fi
 
 if [ ! -x "$(command -v docker)" ]; then
-    echo "Docker is not installed on your system. Running docker install script..."
-    sudo chmod +x docker_install.sh
-    . ./docker_install.sh
+  echo "Docker is not installed on your system. Running docker install script..."
+  sudo chmod +x docker_install.sh
+  . ./docker_install.sh
 fi
 
 if [ ! -d "$CONFIG_DIR" ]; then
@@ -24,11 +29,11 @@ if [ ! -d "$CONFIG_DIR" ]; then
 fi
 
 if [ ! -s "$CONFIG_FILE" ]; then
-    echo "Moving template config file to config directory"
-    [ -f "htpc.env" ] && sudo cp htpc.env "$CONFIG_DIR"
-    sudo chmod 775 "$CONFIG_FILE"
-    echo "Please configure the file \'$CONFIG_FILE\' and re-run this script."
-    exit 0
+  echo "Moving template config file to config directory"
+  [ -f "htpc.env" ] && sudo cp htpc.env "$CONFIG_DIR"
+  sudo chmod 775 "$CONFIG_FILE"
+  echo "Please configure the file \'$CONFIG_FILE\' and re-run this script."
+  exit 0
 fi
 
 echo "Loading config file..."
