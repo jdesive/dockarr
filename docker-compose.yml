@@ -316,7 +316,7 @@ services:
     image: containrrr/watchtower
     container_name: watchtower
     environment:
-      - WATCHTOWER_SCHEDULE=${HTPC_UPDATE_CRON:-"0 3 * * 6"} # At 03:00 on Saturday.
+      - "WATCHTOWER_SCHEDULE=0 3 * * 6" # At 03:00 on Saturday.
       - WATCHTOWER_CLEANUP=${HTPC_UPDATE_CLEANUP:-true}
     volumes:
       - ${HTPC_DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock

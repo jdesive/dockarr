@@ -57,7 +57,6 @@ We are not legally responsible for any improper or illegal use of this repositor
 - HTPC_VPN_CLIENT | `openvpn` | VPN client ("openvpn", "wireguard")
 
 ### Management Settings
-- HTPC_UPDATE_CRON | `0 3 * * 6` | When to check for docker image updates (cron)
 - HTPC_DOCKER_SOCK | `/var/run/docker.sock` | The docker sock for access to docker (Watchtower)
 - HTPC_UPDATE_CLEANUP | `true` | Whether to clean old docker images after updates
 
