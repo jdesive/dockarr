@@ -25,19 +25,50 @@ services:
     image: plexinc/pms-docker
     container_name: plex-server
     environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
       - TZ=${HTPC_TIMEZONE:-America/Chicago}
       - PLEX_CLAIM=${HTPC_PLEX_CLAIM}
+      - VERSION=docker
     volumes:
       - ${HTPC_CONFIG_DIR}/config:/config
       - ${HTPC_CONFIG_DIR}/transcode:/transcode
       - ${HTPC_DATA_DIR}:/data
+    restart: always
     ports:
-      - 32400:32400
+      - 1900:1900/udp
+      - 3005:3005/tcp
+      - 32400:32400/tcp
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+      - 32469:32469/tcp
+      - 8324:8324/tcp
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    network_mode: host
+
+  ubooquity:
+    image: lscr.io/linuxserver/ubooquity:latest
+    container_name: ubooquity
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+      - MAXMEM=2048
+    volumes:
+      - ${HTPC_CONFIG_DIR}/ubooquity:/config
+      - ${HTPC_DATA_DIR}/Books:/books
+      - ${HTPC_DATA_DIR}/Comics:/comics
+      - ${HTPC_DATA_DIR}:/files
+    ports:
+      - 2202:2202
+      - 2203:2203
     restart: always
     labels:
       - com.centurylinklabs.watchtower.enable=true
-    networks:
-      - htpc-backend
+    network_mode: host
 
   #
   # Media Content Management Tools
@@ -144,6 +175,27 @@ services:
     networks:
       - htpc-backend
 
+  # Maylar (https://github.com/mylar3/mylar3)
+  #   Comic Book Media Management
+  mylar3:
+    image: lscr.io/linuxserver/mylar3:latest
+    container_name: mylar3
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/mylar:/config
+      - ${HTPC_DATA_DIR}/Comics:/comics
+      - ${HTPC_WORK_DIR}/downloads:/downloads
+    ports:
+      - 8090:8090
+    restart: always
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    networks:
+      - htpc-backend
+
   # Sonarr (https://sonarr.tv)
   #   Tv Show Media Management
   sonarr:
@@ -184,6 +236,27 @@ services:
       - ${HTPC_WORK_DIR}/incomplete-downloads:/incomplete-downloads
     ports:
       - 7878:7878
+    restart: always
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    networks:
+      - htpc-backend
+
+  # Readarr (https://github.com/Readarr/Readarr)
+  #   EBook Media Management
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/readarr:/config
+      - ${HTPC_DATA_DIR}/Books:/books
+      - ${HTPC_WORK_DIR}/downloads:/downloads
+    ports:
+      - 8787:8787
     restart: always
     labels:
       - com.centurylinklabs.watchtower.enable=true
@@ -282,6 +355,21 @@ services:
     restart: always
     labels:
       - com.centurylinklabs.watchtower.enable=true
+    networks:
+      - htpc-backend
+
+  # Searcharr (https://github.com/toddrob99/searcharr)
+  #    Telegram bot for Media Requests
+  searcharr:
+    image: toddrob/searcharr:latest
+    container_name: searcharr
+    environment:
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/searcharr/data:/app/data
+      - ${HTPC_CONFIG_DIR}/searcharr/logs:/app/logs
+      - ${HTPC_CONFIG_DIR}/searcharr/settings.py:/app/settings.py
+    restart: always
     networks:
       - htpc-backend
 

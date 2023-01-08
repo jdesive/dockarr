@@ -1,5 +1,5 @@
 # Plex Docker
-Plex Docker is a opinionated turn-key installation for HTPC setups. It is highly recommended to follow the instructions to a tee and do not modify the repository in order to get the desired and promised outcome. 
+Plex Docker is an opinionated turn-key installation for HTPC setups. It is highly recommended to follow the instructions to a tee and do not modify the repository in order to get the desired and promised outcome. 
 
 It is important to note that this repository can only set up the folders, permissions, network, and services for a dockerized HTPC and cannot actually configure the service. That is up to you.
 
@@ -23,6 +23,11 @@ We are not legally responsible for any improper or illegal use of this repositor
 - **Nginx-Proxy-Manager**: Expose web services on your network · Free SSL with Let's Encrypt · Designed with security in mind · Perfect for home networks
 - **Watchtower**: A container-based solution for automating Docker container base image updates
 - **Portainer**: Lightweight service delivery platform for containerized applications that can be used to manage Docker, Swarm, Kubernetes and ACI environments.
+- **Searcharr**: This bot allows users to add movies to Radarr, series to Sonarr, and books to Readarr via Telegram messaging app.
+- **Ubooquity**: A free home server for your comics and ebooks library
+- **Mylar3**: A automated Comic Book (cbr/cbz) downloader program for use with NZB and torrents
+- **Readarr**: Readarr is a ebook collection manager for Usenet and BitTorrent users
+- **Searcharr**: This bot allows users to add movies to Radarr, series to Sonarr, and books to Readarr via Telegram messaging app
 
 ## Service Links
 - [Plex](https://plex.tv) | http://localhost:32400/web
@@ -39,6 +44,9 @@ We are not legally responsible for any improper or illegal use of this repositor
 - [Requestrr](https://github.com/darkalfx/requestrr) | http://localhost:4545
 - [NGINX-proxy-manager](https://nginxproxymanager.com/) | http://localhost:81
 - [Portainer](https://www.portainer.io/) | http://localhost:9000
+- [Ubooquity](https://vaemendis.net/ubooquity/) | http://localhost:2203/ubooquity/admin
+- [Mylar3](https://github.com/mylar3/mylar3) | http://localhost:8090
+- [Readarr](https://readarr.com/) | http://localhost:8787
 
 ## Configuration
 
@@ -119,3 +127,9 @@ There are 3 main parent directories created by this repository. You can configur
 - `/opt/htpc`: This is where all configuration, SSL certs, and various persistent settings are stored. (We suggest this be on your main drive, SSD)  
 - `/mnt/Media`: This is the Media parent directory. Here is where you Movies, TV Shows, Music, Photos, etc. are stored. (We suggest this be a mounted share from a NAS or SAN)  
 - `/opt/htpc/tmp`: This is the working directory for all media. Files that are in the process of downloading or other various temp files are stored here. (We suggest this also be on your main drive, SSD)
+
+## Service Config
+Most services are left to set up however you choose via their UI as listed in *Service Links* section, searcharr does require a local settings.py file to be edited with the correct values (There is no UI). 
+
+To edit this file, you can do so when you edit the `htpc.env` file during initial setup. The script will let you know this is optional. If you choose to do this after initial setup, you will need to manually restart the searcharr container before the changes take effect.
+You can do this with `docker restart searcharr`.
