@@ -131,5 +131,5 @@ There are 3 main parent directories created by this repository. You can configur
 ## Service Config
 Most services are left to set up however you choose via their UI as listed in *Service Links* section, searcharr does require a local settings.py file to be edited with the correct values (There is no UI). 
 
-To edit this file, you can do so when you edit the `htpc.env` file during initial setup. The script will let you know this is optional. If you choose to do this after initial setup, you will need to manually restart the searcharr container before the changes take effect.
+To edit this file you will need to manually restart the searcharr container after configuring the `searcharrr.py` file, before the changes take effect.
 You can do this with `docker restart searcharr`.

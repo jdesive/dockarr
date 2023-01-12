@@ -31,11 +31,11 @@ fi
 if [ ! -s "$CONFIG_FILE" ]; then
   echo "Moving template config file to config directory"
   [ -f "htpc.env" ] && sudo cp htpc.env "$CONFIG_DIR"
-  [ -f "settings.py" ] && sudo cp settings.py "$CONFIG_DIR/searcharr"
+  [ -f "settings.py" ] && sudo cp settings.py "$CONFIG_DIR/searcharr/searcharr.py"
   sudo chmod -R 775 "$CONFIG_DIR"
   sudo chmod -R "$USER" "$CONFIG_DIR"
+  sudo chown -R "$USER:$USER" "$CONFIG_DIR"
   echo "Please configure the file \'$CONFIG_FILE\' and re-run this script."
-  echo "Optional: You can also configure searcharr with the file \'$CONFIG_DIR/searcharr/settings.py\'"
   exit 0
 fi
 

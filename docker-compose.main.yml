@@ -368,7 +368,7 @@ services:
     volumes:
       - ${HTPC_CONFIG_DIR}/searcharr/data:/app/data
       - ${HTPC_CONFIG_DIR}/searcharr/logs:/app/logs
-      - ${HTPC_CONFIG_DIR}/searcharr/settings.py:/app/settings.py
+      - ${HTPC_CONFIG_DIR}/searcharr/searcharr.py:/app/searcharr.py
     restart: always
     networks:
       - htpc-backend
