@@ -27,8 +27,7 @@ services:
       - 8324:8324/tcp
     labels:
       - com.centurylinklabs.watchtower.enable=true
-    networks:
-      - htpc-backend
+    network_mode: host
 networks:
   htpc-backend:
     driver: bridge

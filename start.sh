@@ -59,7 +59,7 @@ do
   fi
 
   echo "[Dockarr] Starting stack '$service'..."
-  docker compose up -f "$filePath" -p "$service" -d
+  docker compose -f "$filePath" -p "$service" up -d
 done
 
 echo "[Dockarr] Changing permissions on data, working, and config directories..."

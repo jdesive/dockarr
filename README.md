@@ -27,6 +27,7 @@ We are not legally responsible for any improper or illegal use of this repositor
 - **Mylar3**: A automated Comic Book (cbr/cbz) downloader program for use with NZB and torrents
 - **Readarr**: Readarr is a ebook collection manager for Usenet and BitTorrent users
 - **Searcharr**: This bot allows users to add movies to Radarr, series to Sonarr, and books to Readarr via Telegram messaging app
+- **EmulatorJS**: Self hosted web based retro emulation front end with rom and art management.
 
 ## Service Links
 - [Plex](https://plex.tv) | http://localhost:32400/web
@@ -46,6 +47,7 @@ We are not legally responsible for any improper or illegal use of this repositor
 - [Ubooquity](https://vaemendis.net/ubooquity/) | http://localhost:2203/ubooquity/admin
 - [Mylar3](https://github.com/mylar3/mylar3) | http://localhost:8090
 - [Readarr](https://readarr.com/) | http://localhost:8787
+- [EmulatorJS](https://github.com/linuxserver/emulatorjs) | Management: http://localhost:3000 Application: http://localhost:8088
 
 ## Configuration
 
