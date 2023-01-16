@@ -1,0 +1,17 @@
+services:
+  # Requestrr (https://github.com/darkalfx/requestrr)
+  requestrr:
+    image: darkalfx/requestrr:latest
+    container_name: requestrr
+    volumes:
+      - ${HTPC_CONFIG_DIR}/requestrr:/root/config
+    ports:
+      - 4545:4545
+    restart: always
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    networks:
+      - htpc-backend
+networks:
+  htpc-backend:
+    driver: bridge

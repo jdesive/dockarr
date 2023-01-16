@@ -1,0 +1,23 @@
+services:
+  # Lidarr (https://lidarr.audio/)
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/lidarr:/config
+      - ${HTPC_DATA_DIR}/Music:/music
+      - ${HTPC_WORK_DIR}/downloads:/downloads
+    ports:
+      - 8686:8686
+    restart: always
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    networks:
+      - htpc-backend
+networks:
+  htpc-backend:
+    driver: bridge

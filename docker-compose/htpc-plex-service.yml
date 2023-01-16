@@ -1,0 +1,34 @@
+services:
+  # Plex Media Server (https://plex.tv)
+  plex-server:
+    image: plexinc/pms-docker
+    container_name: plex-server
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+      - PLEX_CLAIM=${HTPC_PLEX_CLAIM}
+      - ADVERTISE_IP=${HTPC_PLEX_IP:-https://192.168.1.256:32400}
+      - VERSION=docker
+    volumes:
+      - ${HTPC_CONFIG_DIR}/config:/config
+      - ${HTPC_CONFIG_DIR}/transcode:/transcode
+      - ${HTPC_DATA_DIR}:/data
+    restart: always
+    ports:
+      - 1900:1900/udp
+      - 3005:3005/tcp
+      - 32400:32400/tcp
+      - 32410:32410/udp
+      - 32412:32412/udp
+      - 32413:32413/udp
+      - 32414:32414/udp
+      - 32469:32469/tcp
+      - 8324:8324/tcp
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    networks:
+      - htpc-backend
+networks:
+  htpc-backend:
+    driver: bridge

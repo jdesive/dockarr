@@ -1,0 +1,17 @@
+services:
+  # Searcharr (https://github.com/toddrob99/searcharr)
+  searcharr:
+    image: toddrob/searcharr:latest
+    container_name: searcharr
+    environment:
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/searcharr/data:/app/data
+      - ${HTPC_CONFIG_DIR}/searcharr/logs:/app/logs
+      - ${HTPC_CONFIG_DIR}/searcharr/searcharr.py:/app/searcharr.py:ro
+    restart: always
+    networks:
+      - htpc-backend
+networks:
+  htpc-backend:
+    driver: bridge

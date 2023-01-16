@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/plex-docker.iml" filepath="$PROJECT_DIR$/.idea/plex-docker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/dockarr.iml" filepath="$PROJECT_DIR$/.idea/dockarr.iml" />
     </modules>
   </component>
 </project>

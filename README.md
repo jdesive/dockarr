@@ -1,5 +1,5 @@
-# Plex Docker
-Plex Docker is an opinionated turn-key installation for HTPC setups. It is highly recommended to follow the instructions to a tee and do not modify the repository in order to get the desired and promised outcome. 
+# Dockarr
+Dockarr is an opinionated turn-key installation for HTPC setups. It is highly recommended to follow the instructions to a tee and do not modify the repository in order to get the desired and promised outcome. 
 
 It is important to note that this repository can only set up the folders, permissions, network, and services for a dockerized HTPC and cannot actually configure the service. That is up to you.
 
@@ -8,7 +8,6 @@ We are not legally responsible for any improper or illegal use of this repositor
 
 ## Services
 - **Plex**: Plex is a one-stop destination to stream movies, tv shows, sports & music
-- **Plex-meta-manager**: Plex Meta Manager is an open source Python 3 project that has been designed to ease the creation and maintenance of metadata, collections, and playlists  
 - **Unmanic**: Unmanic is a simple tool for optimising your file library  
 - **Tautulli**: Tautulli is a 3rd party application that you can run alongside your Plex Media Server to monitor activity and track various statistics  
 - **Sonarr**: Sonarr is an internet PVR for Usenet and Torrents  
@@ -50,6 +49,7 @@ We are not legally responsible for any improper or illegal use of this repositor
 
 ## Configuration
 
+- HTPC_SERVICES | Comma seperated list of services to install (found in `/docker-compose/`)
 - HTPC_CONFIG_DIR | `/opt/htpc` | Central configuration directory 
 - HTPC_DATA_DIR | `/mnt/Media` | Media Parent Directory
 - HTPC_WORK_DIR | `/opt/htpc/tmp` | Parent Temporary Directory
@@ -78,7 +78,9 @@ Ubuntu 22.04
 During first time setup, the `start.sh` script will install Git and Docker if not already installed and executable by the user. 
 The script will also copy a default configuration file to the `/opt/htpc` directory named `htpc.env` and stop executing. 
 You will need to configure this file to your specific setup (See above 'Configuration' section) and re-run the `start.sh` script. 
-These are one time setup steps, and will not be done again after initial setup. 
+These are one time setup steps, and will not need to be done again after initial setup. 
+
+The first variable option (`HTPC_SERVICES`) in the file allows to configure which services Dockarr will install. 
 
 After re-running the `start.sh` script, it will load in your configuration file and start the HTPC docker stack.
 

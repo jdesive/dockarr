@@ -1,0 +1,23 @@
+services:
+  # Maylar (https://github.com/mylar3/mylar3)
+  mylar3:
+    image: lscr.io/linuxserver/mylar3:latest
+    container_name: mylar3
+    environment:
+      - PUID=${HTPC_PUID:-1000}
+      - PGID=${HTPC_PGID:-1000}
+      - TZ=${HTPC_TIMEZONE:-America/Chicago}
+    volumes:
+      - ${HTPC_CONFIG_DIR}/mylar:/config
+      - ${HTPC_DATA_DIR}/Comics:/comics
+      - ${HTPC_WORK_DIR}/downloads:/downloads
+    ports:
+      - 8090:8090
+    restart: always
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    networks:
+      - htpc-backend
+networks:
+  htpc-backend:
+    driver: bridge

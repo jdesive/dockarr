@@ -47,8 +47,8 @@ radarr_movie_command_aliases = ["movie"]  # e.g. ["movie", "mv", "m"]
 radarr_movie_paths = []  # e.g. ["/movies", "/other-movies"] - can be full path or id value - leave empty to enable all
 
 # Readarr
-readarr_enabled = False
-readarr_url = ""  # http://192.168.0.100:8787
+readarr_enabled = true
+readarr_url = "http://readarr:8787"  # http://192.168.0.100:8787
 readarr_api_key = ""
 readarr_quality_profile_id = ["eBook", "Spoken"]  # can be name or id value - include multiple to allow the user to choose
 readarr_metadata_profile_id = ["Standard"]  # can be name or id value - include multiple to allow the user to choose
