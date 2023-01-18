@@ -42,6 +42,10 @@ fi
 echo "[Dockarr] Loading config file..."
 load_dotenv "$CONFIG_FILE"
 
+echo "[Dockarr] Moving Seacharr config file to config directory..."
+mv "$CONFIG_DIR/searcharr/searcharr.py" "$HTPC_CONFIG_DIR/searcharr/searcharr.py"
+
+
 echo "[Dockarr] Setting execute permissions on helper scripts..."
 sudo chmod +x stop.sh
 sudo chmod +x delete.sh
