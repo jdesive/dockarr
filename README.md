@@ -1,10 +1,21 @@
 # Dockarr
-Dockarr is an opinionated turn-key installation for HTPC setups. It is highly recommended to follow the instructions to a tee and do not modify the repository in order to get the desired and promised outcome. 
+An opinionated installation wizard for *arr applications, plex media server, and various other services that make up a HTPC (Home Theater Personal Computer).
 
-It is important to note that this repository can only set up the folders, permissions, network, and services for a dockerized HTPC and cannot actually configure the service. That is up to you.
+**DISCLAIMER:** The author or contributors do not claim ownership of any services listed or used in this repository and are not legally responsible for any 
+improper or illegal use of this repository, it is provided for educational purposes only. All rights go to the owners of the software used.  
 
-We do not claim ownership of any services listed or used in this repository. All rights go to the owners of the software used in this repository.
-We are not legally responsible for any improper or illegal use of this repository, it is provided for educational purposes only. Use at own risk.  
+## Explanation
+Setting up a HTPC can be hard for most let alone doing it with best practices and security in mind. We have curated this cli tool in
+order to help ease some of that and add in some nice-to-have features that make life a little easier. This started simply with wanting and easily 
+deployable and producible script for Plex and companion apps and that is still the goal. 
+
+In order to easily deploy and maintain the services described below, we use Docker as it allows us to spin up and down, update, link, and isolate services. 
+This also helps us manage the resources consumed by the various services in a granular way if desired. Each service is in a docker-compose file that describes 
+environment, volumes, networks, ports, etc. to allow easy modification and customization. 
+
+This cli tool provides commands that can be used to easily install dependencies, download services, install/uninstall services, and update this repo. 
+It is highly recommended to use these scripts.
+
 
 ## Services
 - **Plex**: Plex is a one-stop destination to stream movies, tv shows, sports & music
@@ -22,7 +33,6 @@ We are not legally responsible for any improper or illegal use of this repositor
 - **Nginx-Proxy-Manager**: Expose web services on your network · Free SSL with Let's Encrypt · Designed with security in mind · Perfect for home networks
 - **Watchtower**: A container-based solution for automating Docker container base image updates
 - **Portainer**: Lightweight service delivery platform for containerized applications that can be used to manage Docker, Swarm, Kubernetes and ACI environments.
-- **Searcharr**: This bot allows users to add movies to Radarr, series to Sonarr, and books to Readarr via Telegram messaging app.
 - **Ubooquity**: A free home server for your comics and ebooks library
 - **Mylar3**: A automated Comic Book (cbr/cbz) downloader program for use with NZB and torrents
 - **Readarr**: Readarr is a ebook collection manager for Usenet and BitTorrent users
@@ -49,49 +59,25 @@ We are not legally responsible for any improper or illegal use of this repositor
 - [Readarr](https://readarr.com/) | http://localhost:8787
 - [EmulatorJS](https://github.com/linuxserver/emulatorjs) | Management: http://localhost:3000 Application: http://localhost:8088
 
-## Configuration
-
-- HTPC_SERVICES | Comma seperated list of services to install (found in `/docker-compose/`)
-- HTPC_CONFIG_DIR | `/opt/htpc` | Central configuration directory 
-- HTPC_DATA_DIR | `/mnt/Media` | Media Parent Directory
-- HTPC_WORK_DIR | `/opt/htpc/tmp` | Parent Temporary Directory
-- HTPC_VPN_USER | `exampleUser` | Deluge OpenVPN User
-- HTPC_VPN_PASS | `examplePass` | Deluge OpenVPN Password
-- HTPC_PLEX_CLAIM | `na` | Plex TV Claim (https://plex.tv/claim)
-- HTPC_PGID | `1000` | Group ID
-- HTPC_PUID | `1000` | User ID
-- HTPC_TIMEZONE | `America/Chicago` | Timezone
-- HTPC_VPN_NETWORK | `192.168.1.0/24` | OpenVPN host network for VPN
-- HTPC_VPN_ENABLED | `yes` | Enabled VPN on deluge
-- HTPC_VPN_PROV | `pia` | VPN provider ("airvpn", "pia", "custom")
-- HTPC_VPN_CLIENT | `openvpn` | VPN client ("openvpn", "wireguard")
-
-### Management Settings
-- HTPC_DOCKER_SOCK | `/var/run/docker.sock` | The docker sock for access to docker (Watchtower)
-- HTPC_UPDATE_CLEANUP | `true` | Whether to clean old docker images after updates
 
 ## Getting started
 
-### Recommended OS
-Ubuntu 22.04  
+### Recommended Operating System
+Ubuntu 22.04 +  
+Windows 10 +
 
-### First time setup
+### Installing
+You must have node.js & npm installed.  
+to install dockarr run the following command:  
+`npm install -g dockarr`
 
-During first time setup, the `start.sh` script will install Git and Docker if not already installed and executable by the user. 
-The script will also copy a default configuration file to the `/opt/htpc` directory named `htpc.env` and stop executing. 
-You will need to configure this file to your specific setup (See above 'Configuration' section) and re-run the `start.sh` script. 
-These are one time setup steps, and will not need to be done again after initial setup. 
-
-The first variable option (`HTPC_SERVICES`) in the file allows to configure which services Dockarr will install. 
-
-After re-running the `start.sh` script, it will load in your configuration file and start the HTPC docker stack.
+You can now see the command options with `dockarr --help`
 
 ### Starting the Stack
-To run the start script first execute:
-`sudo chmod +x start.sh`
+To create your first stack/deployment you will run the `dockarr create [options] <name>` command and supply tour settings when asked. 
 
-Then execute:
-`./start.sh`
+If you want to quick start you cna sopy the command below:  
+Linux: `dockarr create -c /opt/htpc -d /mnt/Media -w /opt/htpc/tmp -s 1,2,3,6,8,9,11,13,14 my-first-dockarr`  
 
 
 Now you can move to configuring the individual services via the links above in *Service Links* section above.
@@ -103,11 +89,11 @@ This will stop all services, update this repo, pull down new docker images if av
 Note: This will cause downtime for your HTPC, no services will be running during this process. 
 
 ### Stopping the stack
-To stop the stack you can run the `stop.sh` script. This will simply just stop all the services in docker, you can then simply 
+To stop the stack you can run `dockarr stop <name>`. This will simply just stop all the services in docker, you can then simply 
 run the `start.sh` script again to start the stack back up.
 
 ### Deleting the stack
-To delete the stack you just need to run the `delete.sh` script. This will stop and remove all services.
+To delete the stack you just need to run `dockarr remove <name>`. This will stop and remove all services.
 
 Note: This does not remove media or configuration files for the HTPC.
 

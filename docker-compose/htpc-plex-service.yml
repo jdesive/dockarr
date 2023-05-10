@@ -28,6 +28,3 @@ services:
     labels:
       - com.centurylinklabs.watchtower.enable=true
     network_mode: host
-networks:
-  htpc-backend:
-    driver: bridge

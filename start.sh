@@ -51,6 +51,9 @@ sudo chmod +x stop.sh
 sudo chmod +x delete.sh
 sudo chmod +x update.sh
 
+echo "[Dockarr] Creating backend docker network..."
+docker network create --attachable --driver bridge htpc-backend
+
 services=${HTPC_SERVICES:-""}
 
 for service in $(echo "$services" | sed "s/,/ /g")

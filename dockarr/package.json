@@ -1,0 +1,40 @@
+{
+  "name": "dockarr",
+  "version": "1.0.0",
+  "description": "An opinionated installation wizard for *arr applications, plex media server, and various other services that make up a HTPC (Home Theater Personal Computer).",
+  "scripts": {
+    "build": "npx tsc"
+  },
+  "bin": {
+    "dockarr": "bin/cli.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdesive/dockarr.git"
+  },
+  "keywords": [
+    "dockarr",
+    "docker",
+    "plex",
+    "*arr",
+    "htpc",
+    "cli",
+    "command line tool"
+  ],
+  "author": "Jack DeSive",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "@types/yaml": "^1.9.7",
+    "@types/yargs": "^17.0.24",
+    "docker-compose": "^0.23.19",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "chalk": "4.1.2",
+    "commander": "^10.0.0",
+    "readline": "^1.3.0",
+    "yaml": "^2.2.2",
+    "yargs": "^17.7.1"
+  }
+}

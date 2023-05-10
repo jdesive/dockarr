@@ -1,17 +1,28 @@
 services:
-  # Searcharr (https://github.com/toddrob99/searcharr)
-  searcharr:
-    image: toddrob/searcharr:latest
-    container_name: searcharr
+  telegram-request-bot:
+    build: ./telegram-request-bot
+    container_name: telegram-request-bot
     environment:
-      - TZ=${HTPC_TIMEZONE:-America/Chicago}
-    volumes:
-      - ${HTPC_CONFIG_DIR}/searcharr/data:/app/data
-      - ${HTPC_CONFIG_DIR}/searcharr/logs:/app/logs
-      - ${HTPC_CONFIG_DIR}/searcharr/searcharr.py:/app/searcharr.py:ro
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-none}
+      - TELEGRAM_BOT_USERNAME=${TELEGRAM_BOT_USERNAME:-none}
+      - TELEGRAM_INTAKE_CHATID=${TELEGRAM_INTAKE_CHATID:--1}
+      - TELEGRAM_INTAKE_CHAT_ENABLED=${TELEGRAM_INTAKE_CHAT_ENABLED:-true}
+      - TELEGRAM_BOT_ENABLED=${TELEGRAM_BOT_ENABLED:-false}
+      - RADARR_API_TOKEN=${RADARR_API_TOKEN:-none}
+      - RADARR_BASE_URL=${RADARR_BASE_URL:-http://radarr:7878}
+      - RADARR_ROOT_FOLDER_PATH=${RADARR_ROOT_FOLDER_PATH:-/movies}
+      - RADARR_QUALITY_PROFILE_ID=${RADARR_QUALITY_PROFILE_ID:-1}
+      - SONARR_API_TOKEN=${SONARR_API_TOKEN:-none}
+      - SONARR_BASE_URL=${SONARR_BASE_URL:-http://radarr:7878}
+      - SONARR_ROOT_FOLDER_PATH=${SONARR_ROOT_FOLDER_PATH:-/movies}
+      - SONARR_QUALITY_PROFILE_ID=${SONARR_QUALITY_PROFILE_ID:-1}
+    ports:
+      - 9090:8080
     restart: always
     networks:
       - htpc-backend
 networks:
   htpc-backend:
     driver: bridge
+    external: true
+    name: htpc-backend

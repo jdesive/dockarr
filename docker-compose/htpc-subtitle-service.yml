@@ -21,3 +21,5 @@ services:
 networks:
   htpc-backend:
     driver: bridge
+    external: true
+    name: htpc-backend
