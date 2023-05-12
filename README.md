@@ -6,18 +6,19 @@ improper or illegal use of this repository, it is provided for educational purpo
 
 ## Explanation
 Setting up a HTPC can be hard for most let alone doing it with best practices and security in mind. We have curated this cli tool in
-order to help ease some of that and add in some nice-to-have features that make life a little easier. This started simply with wanting and easily 
+order to help ease some of that and add in some nice-to-have features that make life a little easier. This started simply with wanting an easily 
 deployable and producible script for Plex and companion apps and that is still the goal. 
 
 In order to easily deploy and maintain the services described below, we use Docker as it allows us to spin up and down, update, link, and isolate services. 
 This also helps us manage the resources consumed by the various services in a granular way if desired. Each service is in a docker-compose file that describes 
 environment, volumes, networks, ports, etc. to allow easy modification and customization. 
 
-This cli tool provides commands that can be used to easily install dependencies, download services, install/uninstall services, and update this repo. 
-It is highly recommended to use these scripts.
-
+This cli tool provides commands that can be used to easily install dependencies, download services, install/uninstall services, and update services. 
+It is highly recommended to use the cli an not modify the running services.
 
 ## Services
+
+### Docker
 - **Plex**: Plex is a one-stop destination to stream movies, tv shows, sports & music
 - **Unmanic**: Unmanic is a simple tool for optimising your file library  
 - **Tautulli**: Tautulli is a 3rd party application that you can run alongside your Plex Media Server to monitor activity and track various statistics  
@@ -38,6 +39,14 @@ It is highly recommended to use these scripts.
 - **Readarr**: Readarr is a ebook collection manager for Usenet and BitTorrent users
 - **Searcharr**: This bot allows users to add movies to Radarr, series to Sonarr, and books to Readarr via Telegram messaging app
 - **EmulatorJS**: Self hosted web based retro emulation front end with rom and art management.
+- **HomeAssistant**: Home Assistant allows you to get on top of your energy use with its home energy management feature.
+- **Organizr**: Organizr allows you to set up "Tabs" that will be loaded all in one webpage. You can then work on your server with ease.
+
+### Operating System
+- **Plex Desktop**: Plex desktop client
+- **Plex Media Server**: Plex media server (In case you don't want to run it in docker)
+- **Spotify**: Spotify is a digital music service that gives you access to millions of songs.
+- **Steam**: Steam is the ultimate destination for playing, discussing, and creating games
 
 ## Service Links
 - [Plex](https://plex.tv) | http://localhost:32400/web
@@ -58,7 +67,8 @@ It is highly recommended to use these scripts.
 - [Mylar3](https://github.com/mylar3/mylar3) | http://localhost:8090
 - [Readarr](https://readarr.com/) | http://localhost:8787
 - [EmulatorJS](https://github.com/linuxserver/emulatorjs) | Management: http://localhost:3000 Application: http://localhost:8088
-
+- [HomeAssistant](https://www.home-assistant.io/) | http://localhost:8123
+- [Organizr](https://github.com/Organizr) | http://localhost:8443
 
 ## Getting started
 
@@ -67,16 +77,16 @@ Ubuntu 22.04 +
 Windows 10 +
 
 ### Installing
-You must have node.js & npm installed.  
-to install dockarr run the following command:  
+You must have [Node.JS](https://nodejs.org/en) & [NPM](https://www.npmjs.com/) installed.  
+To install dockarr run the following command:  
 `npm install -g dockarr`
 
 You can now see the command options with `dockarr --help`
 
 ### Starting the Stack
-To create your first stack/deployment you will run the `dockarr create [options] <name>` command and supply tour settings when asked. 
+To create your first stack/deployment you will run the `dockarr create [options] <name>` command and supply your settings when asked. 
 
-If you want to quick start you cna sopy the command below:  
+If you want to quick start you can copy the command below:  
 Linux: `dockarr create -c /opt/htpc -d /mnt/Media -w /opt/htpc/tmp -s 1,2,3,6,8,9,11,13,14 my-first-dockarr`  
 
 
@@ -89,8 +99,8 @@ This will stop all services, update this repo, pull down new docker images if av
 Note: This will cause downtime for your HTPC, no services will be running during this process. 
 
 ### Stopping the stack
-To stop the stack you can run `dockarr stop <name>`. This will simply just stop all the services in docker, you can then simply 
-run the `start.sh` script again to start the stack back up.
+To stop the stack you can run `dockarr stop <name>`. This will simply just stop all the services, you can then simply 
+run `dockarr start <name>` again to start the stack back up.
 
 ### Deleting the stack
 To delete the stack you just need to run `dockarr remove <name>`. This will stop and remove all services.
@@ -114,12 +124,10 @@ When configuring a service to connect to another service there are a few ways to
 ## Filesystem
 There are 3 main parent directories created by this repository. You can configure them in the `start.sh` script.
 
-- `/opt/htpc`: This is where all configuration, SSL certs, and various persistent settings are stored. (We suggest this be on your main drive, SSD)  
-- `/mnt/Media`: This is the Media parent directory. Here is where you Movies, TV Shows, Music, Photos, etc. are stored. (We suggest this be a mounted share from a NAS or SAN)  
-- `/opt/htpc/tmp`: This is the working directory for all media. Files that are in the process of downloading or other various temp files are stored here. (We suggest this also be on your main drive, SSD)
+- `Config Dir`: This is where all configuration, SSL certs, and various persistent settings are stored. (We suggest this be on your main drive, SSD)  
+- `Data Dir`: This is the Media parent directory. Here is where you Movies, TV Shows, Music, Photos, etc. are stored. (We suggest this be a mounted share from a NAS or SAN)  
+- `Work Dir`: This is the working directory for all media. Files that are in the process of downloading or other various temp files are stored here. (We suggest this also be on your main drive, SSD)
 
 ## Service Config
-Most services are left to set up however you choose via their UI as listed in *Service Links* section, searcharr does require a local settings.py file to be edited with the correct values (There is no UI). 
-
-To edit this file you will need to manually restart the searcharr container after configuring the `searcharrr.py` file, before the changes take effect.
-You can do this with `docker restart searcharr`.
+Services are left to set up however you choose via their UI as listed in *Service Links* section. However, there are some 
+helper commands for you ex. (`dockarr get-api-keys`)

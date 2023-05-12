@@ -3,28 +3,7 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <excludeFolder url="file://$MODULE_DIR$/config/bazarr" />
-      <excludeFolder url="file://$MODULE_DIR$/config/config" />
-      <excludeFolder url="file://$MODULE_DIR$/config/deluge" />
-      <excludeFolder url="file://$MODULE_DIR$/config/jackett" />
-      <excludeFolder url="file://$MODULE_DIR$/config/jellyfin" />
-      <excludeFolder url="file://$MODULE_DIR$/config/jellyseerr" />
-      <excludeFolder url="file://$MODULE_DIR$/config/lidarr" />
-      <excludeFolder url="file://$MODULE_DIR$/config/overseerr" />
-      <excludeFolder url="file://$MODULE_DIR$/config/plex-meta-manager" />
-      <excludeFolder url="file://$MODULE_DIR$/config/prowlarr" />
-      <excludeFolder url="file://$MODULE_DIR$/config/radarr" />
-      <excludeFolder url="file://$MODULE_DIR$/config/sabnzbd" />
-      <excludeFolder url="file://$MODULE_DIR$/config/sonarr" />
-      <excludeFolder url="file://$MODULE_DIR$/config/tautulli" />
-      <excludeFolder url="file://$MODULE_DIR$/config/transcode" />
-      <excludeFolder url="file://$MODULE_DIR$/config/unmanic" />
-      <excludeFolder url="file://$MODULE_DIR$/media/Movies" />
-      <excludeFolder url="file://$MODULE_DIR$/media/Music" />
-      <excludeFolder url="file://$MODULE_DIR$/media/TV" />
-      <excludeFolder url="file://$MODULE_DIR$/working/downloads" />
-      <excludeFolder url="file://$MODULE_DIR$/working/incomplete-downloads" />
-      <excludeFolder url="file://$MODULE_DIR$/working/unmanic" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
