@@ -1,6 +1,6 @@
 {
   "name": "dockarr",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "main": "cli.ts",
   "description": "An opinionated installation wizard for *arr applications, plex media server, and various other services that make up a HTPC (Home Theater Personal Computer).",
   "scripts": {
