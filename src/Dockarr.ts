@@ -344,7 +344,13 @@ export class Dockarr {
                         execSync('sudo add-apt-repository multiverse && sudp apt-get update && sudo apt-get install steam', {stdio: 'inherit'});
                         break;
                     case "spotify":
-                        execSync('sudo snap install spotify', {stdio: 'inherit'});
+                        execSync('sudo snap install spotify -y', {stdio: 'inherit'});
+                        break;
+                    case "tidal":
+                        execSync('sudo snap install tidal -y', {stdio: 'inherit'});
+                        break;
+                    case "docker":
+                        execSync('wget -O - https://raw.githubusercontent.com/jdesive/dockarr/master/docker_install.sh | bash', {stdio: 'inherit'})
                         break;
                     default:
                         console.log(chalk.red('Unknown package'));
@@ -364,6 +370,12 @@ export class Dockarr {
                         break;
                     case "spotify":
                         execSync('winget install -e --id Spotify.Spotify', {stdio: 'inherit'});
+                        break;
+                    case "docker":
+                        execSync('winget install -e --id Docker.DockerDesktop', {stdio: 'inherit'});
+                        break;
+                    case "tidal":
+                        execSync('winget install -e --id TIDALMusicAS.TIDAL', {stdio: 'inherit'});
                         break;
                     default:
                         console.log(chalk.red('Unknown package'));

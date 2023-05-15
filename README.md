@@ -1,8 +1,19 @@
 # Dockarr
+![npm](https://img.shields.io/npm/v/dockarr?style=for-the-badge)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/jdesive/dockarr?label=GitHub&style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/jdesive/dockarr?style=for-the-badge)
+![GitHub Repo stars](https://img.shields.io/github/stars/jdesive/dockarr?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/jdesive/dockarr?style=for-the-badge)
+![npm](https://img.shields.io/npm/dw/dockarr?style=for-the-badge)
+
 An opinionated CLI tool for installing and managing [*arr applications](https://wiki.servarr.com/), [Plex Media Server](https://plex.tv), and various other services that make up a HTPC (Home Theater Personal Computer).
 
 **DISCLAIMER:** The author or contributors do not claim ownership of any services listed or used in this repository and are not legally responsible for any 
 improper or illegal use of this repository, it is provided for educational purposes only. All rights go to the owners of the software used.
+
+## Links
+- [Source](https://github.com/jdesive/dockarr) - https://github.com/jdesive/dockarr
+- [NPM](https://www.npmjs.com/package/dockarr) - https://www.npmjs.com/package/dockarr
 
 ## Available Services
 
@@ -37,10 +48,12 @@ improper or illegal use of this repository, it is provided for educational purpo
 
 ### Operating System
 *Installed via `dockarr install <package name>`*
-- **Plex Desktop** | `plex`: Plex desktop client
-- **Plex Media Server** | `plexmediaserver`: Plex media server (In case you don't want to run it in docker)
-- **Spotify** | `spotify`: Spotify is a digital music service that gives you access to millions of songs.
-- **Steam** | `steam`: Steam is the ultimate destination for playing, discussing, and creating games
+- **[Plex Desktop](https://www.plex.tv/media-server-downloads/#plex-app)** | `plex`: Plex desktop client.
+- **[Plex Media Server](https://www.plex.tv/media-server-downloads/#plex-media-server)** | `plexmediaserver`: Plex media server (In case you don't want to run it in docker).
+- **[Spotify](https://open.spotify.com/)** | `spotify`: Spotify is a digital music service that gives you access to millions of songs.
+- **[Steam](https://store.steampowered.com/)** | `steam`: Steam is the ultimate destination for playing, discussing, and creating games.
+- **[Tidal](https://tidal.com/)** | `tidal`: TIDAL is an artist-first, fan-centered music streaming platform that delivers over 100 million songs in HiFi sound quality to the global music community.
+- **[Docker](https://www.docker.com/)** | `docker`: Docker is a platform designed to help developers build, share, and run modern applications.
 
 ## Getting started
 
