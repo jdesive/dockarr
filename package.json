@@ -1,6 +1,6 @@
 {
   "name": "dockarr",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "main": "cli.ts",
   "description": "An opinionated CLI tool for installing and managing *arr applications, Plex Media Server, and various other services that make up a HTPC (Home Theater Personal Computer).",
   "scripts": {
