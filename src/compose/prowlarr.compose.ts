@@ -1,4 +1,4 @@
-export const PROWLARR_COMPOSE_FILE = {
+export const PROWLARR_COMPOSE_FILE = [{
     image: "lscr.io/linuxserver/prowlarr:develop",
     container_name: "prowlarr",
     environment: [
@@ -23,4 +23,4 @@ export const PROWLARR_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

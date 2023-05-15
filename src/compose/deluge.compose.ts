@@ -1,4 +1,4 @@
-export const DELUGE_COMPOSE_FILE = {
+export const DELUGE_COMPOSE_FILE = [{
     image: "binhex/arch-delugevpn:latest",
     container_name: "deluge",
     environment: [
@@ -42,4 +42,4 @@ export const DELUGE_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

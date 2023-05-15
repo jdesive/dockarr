@@ -1,4 +1,4 @@
-export const RADARR_COMPOSE_FILE = {
+export const RADARR_COMPOSE_FILE = [{
     image: "linuxserver/radarr:latest",
     container_name: "radarr",
     environment: [
@@ -26,4 +26,4 @@ export const RADARR_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

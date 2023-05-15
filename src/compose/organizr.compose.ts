@@ -1,4 +1,4 @@
-export const ORGANIZR_COMPOSE_FILE = {
+export const ORGANIZR_COMPOSE_FILE = [{
     image: "organizr/organizr:latest",
     container_name: "organizr",
     environment: [
@@ -22,4 +22,4 @@ export const ORGANIZR_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

@@ -1,4 +1,4 @@
-export const UBOOQUITY_COMPOSE_FILE = {
+export const UBOOQUITY_COMPOSE_FILE = [{
     image: "lscr.io/linuxserver/ubooquity:latest",
     container_name: "ubooquity",
     environment: [
@@ -27,4 +27,4 @@ export const UBOOQUITY_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

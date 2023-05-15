@@ -1,6 +1,6 @@
-export const SABNZBD_COMPOSE_FILE = [{
-    image: "linuxserver/sabnzbd:latest",
-    container_name: "sabnzbd",
+export const KITANA_COMPOSE_FILE = [{
+    image: "pannal/kitana:latest",
+    container_name: "kitana",
     environment: [
         "PUID=$PUID",
         "GUID=$GUID",
@@ -8,13 +8,10 @@ export const SABNZBD_COMPOSE_FILE = [{
         "UMASK_SET=022" // Optional
     ],
     volumes: [
-        "$ConfigDir/sabnzbd:/config",
-        "$WorkDir/downloads:/downloads",
-        "$WorkDir/incomplete-downloads:/incomplete-downloads"
+        "$ConfigDir/kitana:/app/data",
     ],
     ports: [
-        "8080:8080",
-        "9090:9090"
+        "31337:31337"
     ],
     restart: "always",
     labels: [
@@ -23,6 +20,7 @@ export const SABNZBD_COMPOSE_FILE = [{
         "com.dockarr.version=$DockarrVersion",
         "com.dockarr.stack=$StackName",
     ],
+    command: "-B 0.0.0.0:31337 -P",
     networks: [
         "$StackName"
     ]

@@ -19,6 +19,12 @@ import {PORTAINER_COMPOSE_FILE} from "./compose/portainer.compose";
 import {WATCHTOWER_COMPOSE_FILE} from "./compose/watchtower.compose";
 import {HOMEASSISTANT_COMPOSE_FILE} from "./compose/homeassistant.compose";
 import {ORGANIZR_COMPOSE_FILE} from "./compose/organizr.compose";
+import {DUPLICATI_COMPOSE_FILE} from "./compose/duplicati.compose";
+import {TUBESYNC_COMPOSE_FILE} from "./compose/tubesync.compose";
+import {METUBE_COMPOSE_FILE} from "./compose/metube.compose";
+import {KITANA_COMPOSE_FILE} from "./compose/kitana.compose";
+import {LUNASEA_COMPOSE_FILE} from "./compose/lunasea.compose";
+import {PETIO_COMPOSE_FILE} from "./compose/petio.compose";
 
 export interface DockerComposeFile {
     name: string;
@@ -47,4 +53,10 @@ export const COMPOSE_FILES: DockerComposeFile[] = [
     {name: 'WatchTower', file: JSON.stringify(WATCHTOWER_COMPOSE_FILE)},
     {name: 'HomeAssistant', file: JSON.stringify(HOMEASSISTANT_COMPOSE_FILE)},
     {name: 'Organizr', file: JSON.stringify(ORGANIZR_COMPOSE_FILE)},
+    {name: 'Duplicati', file: JSON.stringify(DUPLICATI_COMPOSE_FILE)},
+    {name: 'TubeSync', file: JSON.stringify(TUBESYNC_COMPOSE_FILE)},
+    {name: 'MeTube', file: JSON.stringify(METUBE_COMPOSE_FILE)},
+    {name: 'Kitana', file: JSON.stringify(KITANA_COMPOSE_FILE)},
+    {name: 'LunaSea', file: JSON.stringify(LUNASEA_COMPOSE_FILE)},
+    {name: 'Petio', file: JSON.stringify(PETIO_COMPOSE_FILE)},
 ]

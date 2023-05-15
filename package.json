@@ -2,7 +2,7 @@
   "name": "dockarr",
   "version": "1.0.11",
   "main": "cli.ts",
-  "description": "An opinionated installation wizard for *arr applications, plex media server, and various other services that make up a HTPC (Home Theater Personal Computer).",
+  "description": "An opinionated CLI tool for installing and managing *arr applications, Plex Media Server, and various other services that make up a HTPC (Home Theater Personal Computer).",
   "scripts": {
     "build": "npx tsc",
     "prepublish": "npx tsc"
@@ -29,7 +29,6 @@
   "devDependencies": {
     "@types/node": "^18.15.11",
     "@types/yaml": "^1.9.7",
-    "@types/yargs": "^17.0.24",
     "typescript": "^5.0.2"
   },
   "dependencies": {

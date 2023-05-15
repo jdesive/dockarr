@@ -1,4 +1,4 @@
-export const OVERSEERR_COMPOSE_FILE = {
+export const OVERSEERR_COMPOSE_FILE = [{
     image: "lscr.io/linuxserver/overseerr:latest",
     container_name: "overseerr",
     environment: [
@@ -23,4 +23,4 @@ export const OVERSEERR_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

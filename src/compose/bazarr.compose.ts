@@ -1,4 +1,4 @@
-export const BAZARR_COMPOSE_FILE = {
+export const BAZARR_COMPOSE_FILE = [{
     image: "lscr.io/linuxserver/bazarr:latest",
     container_name: "bazarr",
     environment: [
@@ -25,4 +25,4 @@ export const BAZARR_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

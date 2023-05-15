@@ -1,4 +1,4 @@
-export const LIDARR_COMPOSE_FILE = {
+export const LIDARR_COMPOSE_FILE = [{
     image: "lscr.io/linuxserver/lidarr:latest",
     container_name: "lidarr",
     environment: [
@@ -26,4 +26,4 @@ export const LIDARR_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

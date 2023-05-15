@@ -1,6 +1,6 @@
-export const SABNZBD_COMPOSE_FILE = [{
-    image: "linuxserver/sabnzbd:latest",
-    container_name: "sabnzbd",
+export const DUPLICATI_COMPOSE_FILE = [{
+    image: "linuxserver/duplicati:latest",
+    container_name: "duplicati",
     environment: [
         "PUID=$PUID",
         "GUID=$GUID",
@@ -8,13 +8,12 @@ export const SABNZBD_COMPOSE_FILE = [{
         "UMASK_SET=022" // Optional
     ],
     volumes: [
-        "$ConfigDir/sabnzbd:/config",
-        "$WorkDir/downloads:/downloads",
-        "$WorkDir/incomplete-downloads:/incomplete-downloads"
+        "$ConfigDir/duplicati:/config",
+        "$ConfigDir/duplicati/backups:/backups",
+        "$DataDir:/source"
     ],
     ports: [
-        "8080:8080",
-        "9090:9090"
+        "8200:8200"
     ],
     restart: "always",
     labels: [

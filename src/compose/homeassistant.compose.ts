@@ -1,4 +1,4 @@
-export const HOMEASSISTANT_COMPOSE_FILE = {
+export const HOMEASSISTANT_COMPOSE_FILE = [{
     image: "homeassistant/home-assistant:stable",
     container_name: "homeassistant",
     environment: [
@@ -22,4 +22,4 @@ export const HOMEASSISTANT_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

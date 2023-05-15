@@ -1,4 +1,4 @@
-export const UNMANIC_COMPOSE_FILE = {
+export const UNMANIC_COMPOSE_FILE = [{
     image: "josh5/unmanic:latest",
     container_name: "unmanic",
     environment: [
@@ -25,4 +25,4 @@ export const UNMANIC_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

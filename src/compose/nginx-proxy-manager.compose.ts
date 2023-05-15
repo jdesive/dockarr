@@ -1,4 +1,4 @@
-export const NPM_COMPOSE_FILE = {
+export const NPM_COMPOSE_FILE = [{
     image: "jc21/nginx-proxy-manager:latest",
     container_name: "nginx-proxy-manager",
     environment: [
@@ -26,4 +26,4 @@ export const NPM_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

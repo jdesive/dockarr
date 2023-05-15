@@ -1,20 +1,16 @@
-export const SABNZBD_COMPOSE_FILE = [{
-    image: "linuxserver/sabnzbd:latest",
-    container_name: "sabnzbd",
+export const METUBE_COMPOSE_FILE = {
+    image: "ghcr.io/alexta69/metube:latest",
+    container_name: "metube",
     environment: [
         "PUID=$PUID",
         "GUID=$GUID",
-        "TZ=$Timezone",
-        "UMASK_SET=022" // Optional
+        "TZ=$Timezone"
     ],
     volumes: [
-        "$ConfigDir/sabnzbd:/config",
-        "$WorkDir/downloads:/downloads",
-        "$WorkDir/incomplete-downloads:/incomplete-downloads"
+        "$DataDir/YouTube:/downloads",
     ],
     ports: [
-        "8080:8080",
-        "9090:9090"
+        "8081:8081"
     ],
     restart: "always",
     labels: [
@@ -26,4 +22,4 @@ export const SABNZBD_COMPOSE_FILE = [{
     networks: [
         "$StackName"
     ]
-}];
+};

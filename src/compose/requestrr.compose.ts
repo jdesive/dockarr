@@ -1,4 +1,4 @@
-export const REQUESTRR_COMPOSE_FILE = {
+export const REQUESTRR_COMPOSE_FILE = [{
     image: "darkalfx/requestrr:latest",
     container_name: "requestrr",
     environment: [
@@ -23,4 +23,4 @@ export const REQUESTRR_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

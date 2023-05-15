@@ -1,4 +1,4 @@
-export const MYLAR3_COMPOSE_FILE = {
+export const MYLAR3_COMPOSE_FILE = [{
     image: "lscr.io/linuxserver/mylar3:latest",
     container_name: "mylar3",
     environment: [
@@ -25,4 +25,4 @@ export const MYLAR3_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

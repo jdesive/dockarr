@@ -1,4 +1,4 @@
-export const WATCHTOWER_COMPOSE_FILE = {
+export const WATCHTOWER_COMPOSE_FILE = [{
     image: "containrrr/watchtower:latest",
     container_name: "watchtower",
     environment: [
@@ -16,4 +16,4 @@ export const WATCHTOWER_COMPOSE_FILE = {
         "com.dockarr.version=$DockarrVersion",
         "com.dockarr.stack=$StackName",
     ]
-};
+}];

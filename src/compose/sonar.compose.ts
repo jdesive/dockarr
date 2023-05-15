@@ -1,4 +1,4 @@
-export const SONARR_COMPOSE_FILE = {
+export const SONARR_COMPOSE_FILE = [{
     image: "linuxserver/sonarr:latest",
     container_name: "sonarr",
     environment: [
@@ -26,4 +26,4 @@ export const SONARR_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

@@ -1,4 +1,4 @@
-export const PORTAINER_COMPOSE_FILE = {
+export const PORTAINER_COMPOSE_FILE = [{
     image: "portainer/portainer-ce:latest",
     container_name: "portainer",
     security_opt: [
@@ -18,4 +18,4 @@ export const PORTAINER_COMPOSE_FILE = {
         "com.dockarr.version=$DockarrVersion",
         "com.dockarr.stack=$StackName",
     ]
-};
+}];

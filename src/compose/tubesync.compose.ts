@@ -1,6 +1,6 @@
-export const SABNZBD_COMPOSE_FILE = [{
-    image: "linuxserver/sabnzbd:latest",
-    container_name: "sabnzbd",
+export const TUBESYNC_COMPOSE_FILE = [{
+    image: "ghcr.io/meeb/tubesync:latest",
+    container_name: "tubesync",
     environment: [
         "PUID=$PUID",
         "GUID=$GUID",
@@ -8,13 +8,11 @@ export const SABNZBD_COMPOSE_FILE = [{
         "UMASK_SET=022" // Optional
     ],
     volumes: [
-        "$ConfigDir/sabnzbd:/config",
-        "$WorkDir/downloads:/downloads",
-        "$WorkDir/incomplete-downloads:/incomplete-downloads"
+        "$ConfigDir/tubesync:/config",
+        "$DataDir/YouTube:/downloads",
     ],
     ports: [
-        "8080:8080",
-        "9090:9090"
+        "4848:4848"
     ],
     restart: "always",
     labels: [

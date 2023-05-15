@@ -1,4 +1,4 @@
-export const EMULATORJS_COMPOSE_FILE = {
+export const EMULATORJS_COMPOSE_FILE = [{
     image: "lscr.io/linuxserver/emulatorjs:latest",
     container_name: "emulatorjs",
     environment: [
@@ -26,4 +26,4 @@ export const EMULATORJS_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

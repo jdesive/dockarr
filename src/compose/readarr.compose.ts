@@ -1,4 +1,4 @@
-export const READARR_COMPOSE_FILE = {
+export const READARR_COMPOSE_FILE = [{
     image: "lscr.io/linuxserver/readarr:develop",
     container_name: "readarr",
     environment: [
@@ -26,4 +26,4 @@ export const READARR_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

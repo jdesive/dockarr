@@ -1,4 +1,4 @@
-export const TAUTULLI_COMPOSE_FILE = {
+export const TAUTULLI_COMPOSE_FILE = [{
     image: "tautulli/tautulli:latest",
     container_name: "tautulli",
     environment: [
@@ -24,4 +24,4 @@ export const TAUTULLI_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];

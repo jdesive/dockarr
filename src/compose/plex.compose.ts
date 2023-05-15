@@ -1,4 +1,4 @@
-export const PLEX_COMPOSE_FILE = {
+export const PLEX_COMPOSE_FILE = [{
     image: "plexinc/pms-docker:latest",
     container_name: "plex",
     environment: [
@@ -35,4 +35,4 @@ export const PLEX_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];
