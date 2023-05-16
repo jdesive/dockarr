@@ -1,4 +1,4 @@
-export const METUBE_COMPOSE_FILE = {
+export const METUBE_COMPOSE_FILE = [{
     image: "ghcr.io/alexta69/metube:latest",
     container_name: "metube",
     environment: [
@@ -22,4 +22,4 @@ export const METUBE_COMPOSE_FILE = {
     networks: [
         "$StackName"
     ]
-};
+}];
