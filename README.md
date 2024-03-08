@@ -45,6 +45,7 @@ improper or illegal use of this repository, it is provided for educational purpo
 - **[Kitana](https://github.com/pannal/Kitana)**: A responsive Plex plugin web frontend
 - **[LunaSea](https://www.lunasea.app/)**: LunaSea is a fully featured, open source self-hosted controller focused on giving you a seamless experience between all of your self-hosted media software remotely on your devices.
 - **[Petio](https://petio.tv/)**: Petio is a third party companion app available to Plex server owners to allow their users to request, review and discover content.
+- **[ADGuardHome](https://adguard.com/en/welcome.html)**: AdGuard is the best way to get rid of annoying ads and online tracking and protect your computer from malware
 
 ### Operating System
 *Installed via `dockarr install <package name>`*
