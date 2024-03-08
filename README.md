@@ -119,6 +119,7 @@ Note: This does not remove media or configuration files for the HTPC.
 - [Kitana](https://github.com/pannal/Kitana) | http://localhost:31337
 - [LunaSea](https://www.lunasea.app/) | http://localhost:5423
 - [Petio](https://petio.tv/) | http://localhost:7777
+- [ADGuardHome](https://adguard.com/en/welcome.html) | http://localhost:3001
 
 ## Explanation
 Setting up a HTPC can be hard for most let alone doing it with best practices and security in mind. Unsatisfied with the installation tools out there currently,

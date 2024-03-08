@@ -25,6 +25,7 @@ import {METUBE_COMPOSE_FILE} from "./compose/metube.compose";
 import {KITANA_COMPOSE_FILE} from "./compose/kitana.compose";
 import {LUNASEA_COMPOSE_FILE} from "./compose/lunasea.compose";
 import {PETIO_COMPOSE_FILE} from "./compose/petio.compose";
+import {ADGUARDHOME_COMPOSE_FILE} from "./compose/adguardhome.compose";
 
 export interface DockerComposeFile {
     name: string;
@@ -59,4 +60,5 @@ export const COMPOSE_FILES: DockerComposeFile[] = [
     {name: 'Kitana', file: JSON.stringify(KITANA_COMPOSE_FILE)},
     {name: 'LunaSea', file: JSON.stringify(LUNASEA_COMPOSE_FILE)},
     {name: 'Petio', file: JSON.stringify(PETIO_COMPOSE_FILE)},
+    {name: 'ADGuardHome', file: JSON.stringify(ADGUARDHOME_COMPOSE_FILE)},
 ]
