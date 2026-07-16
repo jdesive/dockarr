@@ -1,14 +1,16 @@
 export const OVERSEERR_COMPOSE_FILE = [{
-    image: "lscr.io/linuxserver/overseerr:latest",
-    container_name: "overseerr",
+    image: "ghcr.io/seerr-team/seerr:latest",
+    container_name: "seerr",
+    init: true,
     environment: [
         "PUID=$PUID",
         "GUID=$GUID",
         "TZ=$Timezone",
-        "UMASK_SET=022" // Optional
+        "UMASK_SET=022", // Optional
+        "PORT=5055" // Optional
     ],
     volumes: [
-        "$ConfigDir/overseerr:/config",
+        "$ConfigDir/overseerr:/app/config",
     ],
     ports: [
         "5055:5055"
