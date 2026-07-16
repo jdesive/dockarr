@@ -41,7 +41,7 @@ export const COMPOSE_FILES: DockerComposeFile[] = [
     {name: 'Bazarr', file: JSON.stringify(BAZARR_COMPOSE_FILE)},
     {name: 'Mylar3', file: JSON.stringify(MYLAR3_COMPOSE_FILE)},
     {name: 'Prowlarr', file: JSON.stringify(PROWLARR_COMPOSE_FILE)},
-    {name: 'Overseerr', file: JSON.stringify(OVERSEERR_COMPOSE_FILE)},
+    {name: 'Seerr', file: JSON.stringify(OVERSEERR_COMPOSE_FILE)},
     {name: 'Requestrr', file: JSON.stringify(REQUESTRR_COMPOSE_FILE)},
     {name: 'Tautulli', file: JSON.stringify(TAUTULLI_COMPOSE_FILE)},
     {name: 'Unmanic', file: JSON.stringify(UNMANIC_COMPOSE_FILE)},

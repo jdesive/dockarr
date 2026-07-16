@@ -54,7 +54,7 @@ improper or illegal use of this repository, it is provided for educational purpo
 - **[Spotify](https://open.spotify.com/)** | `spotify`: Spotify is a digital music service that gives you access to millions of songs.
 - **[Steam](https://store.steampowered.com/)** | `steam`: Steam is the ultimate destination for playing, discussing, and creating games.
 - **[Tidal](https://tidal.com/)** | `tidal`: TIDAL is an artist-first, fan-centered music streaming platform that delivers over 100 million songs in HiFi sound quality to the global music community.
-- **[Docker](https://www.docker.com/)** | `docker`: Docker is a platform designed to help developers build, share, and run modern applications.
+- **[Docker](https://www.docker.com/)** | `docker`: Docker is a platform designed to help developers build, share, and run modern applications. (Note: On Linux, this uses the official Docker convenience script from `get.docker.com`)
 
 ## Getting started
 
@@ -127,12 +127,12 @@ Setting up a HTPC can be hard for most let alone doing it with best practices an
 we have created and tested this cli tool in order to help ease some of those headaches and add in some nice-to-have features to make life a little easier. This started
 simply with wanting an easily deployable and producible script for Plex and companion apps and that is still the goal.
 
-In order to easily deploy and maintain the services described below, we use Docker as it allows us to spin up and down, update, link, and isolate services.
-This also helps us manage the resources consumed by the various services in a granular way if desired. Each service is in a docker-compose file that describes
-environment, volumes, networks, ports, etc. to allow easy modification and customization.
-
-This cli tool provides commands that can be used to easily install dependencies, download services, install/uninstall services, and update services.
-It is highly recommended to use the cli an not modify the running services or the underlying files manually.
+### Security
+While Dockarr aims to simplify deployment, it is important to follow security best practices:
+- **Docker Socket**: Services like Portainer and Watchtower require access to `/var/run/docker.sock`. This provides the container with near-root access to the host machine. Only use these services if you trust them and understand the risks.
+- **Insecure Connections**: By default, many services are exposed over plain HTTP. It is highly recommended to use a reverse proxy (like the included Nginx Proxy Manager) with SSL/TLS for all external access.
+- **API Keys**: Commands like `get-api-keys` fetch information over plain HTTP within your network. Ensure your local network is secure.
+- **Image Versions**: Dockarr currently uses `:latest` tags for ease of use and updates. For production environments, consider pinning to specific versions or digests in the generated compose files for better reproducibility.
 
 ### Networking
 All services are provided on a docker bridge network with host port mapping for each service. This way you can configure each service by navigating to `http://<HTPC IP>:<service port>` in your browser.

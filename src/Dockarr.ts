@@ -45,7 +45,15 @@ export class Dockarr {
         }
     }
 
+    validateName(name: string) {
+        const isValid = /^[a-zA-Z0-9._-]+$/.test(name);
+        if (!isValid) {
+            throw new Error(`Invalid deployment name: "${name}". Only alphanumeric characters, dots, underscores, and hyphens are allowed.`);
+        }
+    }
+
     async stopStack(name: string, options: any) {
+        this.validateName(name);
         const deploymentDir = Path.join(dockarrDir, name);
         console.log(chalk.blue('Stopping deployment...'));
         const files = fs.readdirSync(dockarrDir, {withFileTypes: true, encoding: 'utf-8'});
@@ -72,6 +80,7 @@ export class Dockarr {
     }
 
     async restartStack(name: string, options: any) {
+        this.validateName(name);
         const deploymentDir = Path.join(dockarrDir, name);
         console.log(chalk.blue('Restarting deployment...'));
         const files = fs.readdirSync(dockarrDir, {withFileTypes: true, encoding: 'utf-8'});
@@ -98,6 +107,7 @@ export class Dockarr {
     }
 
     async updateStack(name: string, options: any) {
+        this.validateName(name);
         const deploymentDir = Path.join(dockarrDir, name);
         console.log(chalk.blue('Updating deployment...'));
         const files = fs.readdirSync(dockarrDir, {withFileTypes: true, encoding: 'utf-8'});
@@ -148,6 +158,7 @@ export class Dockarr {
     }
 
     async deleteStack(name: string) {
+        this.validateName(name);
         const deploymentDir = Path.join(dockarrDir, name);
         console.log(chalk.blue('Stopping deployment...'));
         const files = fs.readdirSync(dockarrDir, {withFileTypes: true, encoding: 'utf-8'});
@@ -166,6 +177,7 @@ export class Dockarr {
     }
 
     async startStack(name: string, options: any) {
+        this.validateName(name);
         const deploymentDir = Path.join(dockarrDir, name);
         console.log(chalk.blue('Starting deployment...'));
 
@@ -190,6 +202,7 @@ export class Dockarr {
     }
 
     async createStack(name: string, options: any) {
+        this.validateName(name);
         await compose.version().then(str => console.log(chalk.blue('Docker Version: ') + str.data.version));
         let servicesToDeploy: DockerComposeFile[] = [];
 
@@ -251,6 +264,10 @@ export class Dockarr {
         for (let dockerComposeFile of servicesToDeploy) {
             let fileContentStr = dockerComposeFile.file;
 
+            if (dockerComposeFile.name === 'Portainer' || dockerComposeFile.name === 'WatchTower') {
+                console.log(chalk.yellow(`Warning: ${dockerComposeFile.name} requires access to the Docker socket ($DockerSock). This gives the container significant control over the host.`));
+            }
+
             // Hmmmmmm, not the best eh?
             fileContentStr = fileContentStr.replace(/\$ConfigDir/g, options.configDir);
             fileContentStr = fileContentStr.replace(/\$WorkDir/g, options.workDir);
@@ -308,6 +325,7 @@ export class Dockarr {
     }
 
     async getApiKeys() {
+        console.log(chalk.yellow('Warning: Fetching API keys over insecure HTTP. Ensure your network is trusted.'));
         const services = [
             {name: 'Sonarr', port: '8989'},
             {name: 'Radarr', port: '7878'},
@@ -350,7 +368,11 @@ export class Dockarr {
                         execSync('sudo snap install tidal -y', {stdio: 'inherit'});
                         break;
                     case "docker":
-                        execSync('wget -O - https://raw.githubusercontent.com/jdesive/dockarr/master/docker_install.sh | bash', {stdio: 'inherit'})
+                        console.log(chalk.blue('Installing Docker using the official convenience script...'));
+                        execSync('curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh', {stdio: 'inherit'});
+                        console.log(chalk.blue('Post-installation steps: Adding user to docker group...'));
+                        execSync('sudo usermod -aG docker $USER', {stdio: 'inherit'});
+                        console.log(chalk.green('Docker installed successfully! You may need to log out and back in for group changes to take effect.'));
                         break;
                     default:
                         console.log(chalk.red('Unknown package'));
