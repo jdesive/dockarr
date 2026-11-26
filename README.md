@@ -46,6 +46,11 @@ improper or illegal use of this repository, it is provided for educational purpo
 - **[LunaSea](https://www.lunasea.app/)**: LunaSea is a fully featured, open source self-hosted controller focused on giving you a seamless experience between all of your self-hosted media software remotely on your devices.
 - **[Petio](https://petio.tv/)**: Petio is a third party companion app available to Plex server owners to allow their users to request, review and discover content.
 - **[ADGuardHome](https://adguard.com/en/welcome.html)**: AdGuard is the best way to get rid of annoying ads and online tracking and protect your computer from malware
+- **[xTeVe](https://github.com/xteve-project/xTeVe)**: M3U Proxy for Plex DVR and Emby Live TV
+- **[Mealie](https://mealie.io/)**: An intuitive and easy to use recipe management app.
+- **[Kavita](https://www.kavitareader.com/)**: Lighting fast with a slick design, Kavita is a rocket fueled self-hosted digital library which supports a vast array of file formats.
+- **[Jellyfin](https://jellyfin.org/)**: Jellyfin is the volunteer-built media solution that puts you in control of your media. Stream to any device from your own server, with no strings attached. Your media, your server, your way.
+- **[Tunarr](https://github.com/chrisbenincasa/tunarr)**: Tunarr lets you build custom live TV channels out of your existing media libraries — movies, TV episodes, music videos, or local files — and stream them as if they were real broadcast channels.
 
 ### Operating System
 *Installed via `dockarr install <package name>`*
@@ -121,6 +126,10 @@ Note: This does not remove media or configuration files for the HTPC.
 - [LunaSea](https://www.lunasea.app/) | http://localhost:5423
 - [Petio](https://petio.tv/) | http://localhost:7777
 - [ADGuardHome](https://adguard.com/en/welcome.html) | http://localhost:3001
+- [xTeVe](https://github.com/xteve-project/xTeVe) | http://localhost:34400
+- [Mealie](https://mealie.io/) | http://localhost:9925
+- [Kavita](https://www.kavitareader.com/) | http://localhost:9925
+- [Jellyfin](https://jellyfin.org/) | http://localhost:8096
 
 ## Explanation
 Setting up a HTPC can be hard for most let alone doing it with best practices and security in mind. Unsatisfied with the installation tools out there currently,

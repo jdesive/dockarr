@@ -26,6 +26,11 @@ import {KITANA_COMPOSE_FILE} from "./compose/kitana.compose";
 import {LUNASEA_COMPOSE_FILE} from "./compose/lunasea.compose";
 import {PETIO_COMPOSE_FILE} from "./compose/petio.compose";
 import {ADGUARDHOME_COMPOSE_FILE} from "./compose/adguardhome.compose";
+import {XTEVE_COMPOSE_FILE} from "./compose/xteve.compose";
+import {MEALIE_COMPOSE_FILE} from "./compose/mealie.compose.yaml";
+import {KAVITA_COMPOSE_FILE} from "./compose/kavita.compose.yaml";
+import {JELLYFIN_COMPOSE_FILE} from "./compose/jellyfin.compose";
+import { TUNARR_COMPOSE_FILE } from "./compose/tunarr.compose";
 
 export interface DockerComposeFile {
     name: string;
@@ -61,4 +66,9 @@ export const COMPOSE_FILES: DockerComposeFile[] = [
     {name: 'LunaSea', file: JSON.stringify(LUNASEA_COMPOSE_FILE)},
     {name: 'Petio', file: JSON.stringify(PETIO_COMPOSE_FILE)},
     {name: 'ADGuardHome', file: JSON.stringify(ADGUARDHOME_COMPOSE_FILE)},
+    {name: 'Xteve', file: JSON.stringify(XTEVE_COMPOSE_FILE)},
+    {name: 'Mealie', file: JSON.stringify(MEALIE_COMPOSE_FILE)},
+    {name: 'Kavita', file: JSON.stringify(KAVITA_COMPOSE_FILE)},
+    {name: 'Jellyfin', file: JSON.stringify(JELLYFIN_COMPOSE_FILE)},
+    {name: 'Tunarr', file: JSON.stringify(TUNARR_COMPOSE_FILE)},
 ]

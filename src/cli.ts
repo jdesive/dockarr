@@ -39,6 +39,7 @@ async function run() {
         .option('--vpn-prov [vpnProv]', 'Deluge VPN Provider', "pia")
         .option('--vpn-client [vpnClient]', 'Deluge VPN Client', "openvpn")
         .option('--vpn-network [vpnNetwork]', 'Deluge VPN Network', "192.168.1.0/24")
+        .option('--base-url [baseUrl]', 'Base Url for the stack, if making public facing', undefined)
         .requiredOption('-c, --config-dir [configDir]', 'Configuration file parent directory full path')
         .requiredOption('-d, --data-dir [dataDir]', 'Data directory full path where the media libraries are located')
         .requiredOption('-w, --work-dir [workDir]', 'Working directory where files are temporarily stored')

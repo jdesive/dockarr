@@ -52,6 +52,18 @@ export class Dockarr {
         }
     }
 
+    async listStackServiceLinks(name: string) {
+
+        const deploymentDir = Path.join(dockarrDir, name);
+        const files = fs.readdirSync(dockarrDir, {withFileTypes: true, encoding: 'utf-8'});
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].name === name) {
+                // Found docker compose file
+
+            }
+        }
+    }
+
     async stopStack(name: string, options: any) {
         this.validateName(name);
         const deploymentDir = Path.join(dockarrDir, name);
@@ -258,6 +270,14 @@ export class Dockarr {
             }
         }
 
+        let baseUrl = options.baseUrl;
+        if (baseUrl === undefined) {
+            console.log(chalk.blueBright('Please provide your base url domain name: (ex. example.com)'));
+            const rl = readline.createInterface({input, output});
+            baseUrl = await rl.question('BaseUrl> ');
+            rl.close();
+        }
+
         // Generate docker-compose manifest
         console.log(chalk.blue('Generating the docker-compose manifest...'));
         let composeManifest = new Map();
@@ -286,6 +306,7 @@ export class Dockarr {
             fileContentStr = fileContentStr.replace(/\$VPNNetwork/g, options.vpnNetwork);
             fileContentStr = fileContentStr.replace(/\$DockarrVersion/g, DOCKARR_VERSION);
             fileContentStr = fileContentStr.replace(/\$StackName/g, name);
+            fileContentStr = fileContentStr.replace(/\$BaseUrl/g, baseUrl);
 
             const manifests = JSON.parse(fileContentStr);
 
