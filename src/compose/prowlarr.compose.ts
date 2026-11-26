@@ -3,7 +3,7 @@ export const PROWLARR_COMPOSE_FILE = [{
     container_name: "prowlarr",
     environment: [
         "PUID=$PUID",
-        "GUID=$GUID",
+        "PGID=$GUID",
         "TZ=$Timezone",
         "UMASK_SET=022" // Optional
     ],

@@ -3,7 +3,7 @@ export const ADGUARDHOME_COMPOSE_FILE = [{
     container_name: "adguardhome",
     environment: [
         "PUID=$PUID",
-        "GUID=$GUID",
+        "PGID=$GUID",
         "TZ=$Timezone",
         "UMASK_SET=022" // Optional
     ],

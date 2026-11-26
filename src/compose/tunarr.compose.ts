@@ -3,7 +3,7 @@ export const TUNARR_COMPOSE_FILE = [{
     container_name: "tunarr",
     environment: [
         "PUID=$PUID",
-        "GUID=$GUID",
+        "PGID=$GUID",
         "TZ=$Timezone",
     ],
     volumes: [

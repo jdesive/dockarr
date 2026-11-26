@@ -3,7 +3,7 @@ export const RADARR_COMPOSE_FILE = [{
     container_name: "radarr",
     environment: [
         "PUID=$PUID",
-        "GUID=$GUID",
+        "PGID=$GUID",
         "TZ=$Timezone",
         "UMASK_SET=022" // Optional
     ],

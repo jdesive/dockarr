@@ -128,8 +128,9 @@ Note: This does not remove media or configuration files for the HTPC.
 - [ADGuardHome](https://adguard.com/en/welcome.html) | http://localhost:3001
 - [xTeVe](https://github.com/xteve-project/xTeVe) | http://localhost:34400
 - [Mealie](https://mealie.io/) | http://localhost:9925
-- [Kavita](https://www.kavitareader.com/) | http://localhost:9925
+- [Kavita](https://www.kavitareader.com/) | http://localhost:5000
 - [Jellyfin](https://jellyfin.org/) | http://localhost:8096
+- [Tunarr](https://github.com/chrisbenincasa/tunarr) | http://localhost:8001
 
 ## Explanation
 Setting up a HTPC can be hard for most let alone doing it with best practices and security in mind. Unsatisfied with the installation tools out there currently,

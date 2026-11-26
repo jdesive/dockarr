@@ -3,7 +3,7 @@ export const MEALIE_COMPOSE_FILE = [{
     container_name: "mealie",
     environment: [
         "PUID=$PUID",
-        "GUID=$GUID",
+        "PGID=$GUID",
         "TZ=$Timezone",
         "UMASK_SET=022", // Optional
         "ALLOW_SIGNUP=\"false\"",

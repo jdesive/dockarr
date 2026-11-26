@@ -3,7 +3,7 @@ export const MYLAR3_COMPOSE_FILE = [{
     container_name: "mylar3",
     environment: [
         "PUID=$PUID",
-        "GUID=$GUID",
+        "PGID=$GUID",
         "TZ=$Timezone",
         "UMASK_SET=022" // Optional
     ],

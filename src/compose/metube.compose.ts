@@ -3,7 +3,7 @@ export const METUBE_COMPOSE_FILE = [{
     container_name: "metube",
     environment: [
         "PUID=$PUID",
-        "GUID=$GUID",
+        "PGID=$GUID",
         "TZ=$Timezone"
     ],
     volumes: [
