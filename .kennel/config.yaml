@@ -1,0 +1,87 @@
+# kennel project configuration. Committed to the repository and read-only inside the sandbox.
+#
+# After editing: `kennel init` regenerates the container files (hand edits to them are kept and
+# reported), and `kennel prepare` (or `kennel up`) applies the policy and mounts.
+# Anything that weakens isolation lives under `unsafe:`; it is honoured only in this file, and
+# `kennel prepare` lists it every time. See the kennel docs: decisions/0003 and 0006.
+version: 1
+project: plex-docker
+
+# Stacks choose toolchains, cache volumes and package-registry allowlists. "auto" re-detects them
+# from marker files whenever you run `kennel init`; or pin the list explicitly:
+# [node, python, go, rust, java, dotnet, ruby, php]
+stacks: auto
+
+agent:
+  # claude | none. "none" is bring-your-own agent: set `command` and (usually) `base_image`.
+  preset: claude
+  command: ["claude"]
+  # Exact version. kennel ships an integrity pin for 2.1.286 only; any other version is
+  # installed without one and `kennel init` says so.
+  version: "2.1.286"
+  # true also allows the agent's optional telemetry hosts through the gateway.
+  telemetry: false
+  # true also allows claude.ai MCP connector traffic through the gateway.
+  mcp_connectors: false
+  # Non-secret environment for the agent. Proxy, loader and kennel variables are refused.
+  # env: {NODE_ENV: development}
+  # Extra Debian packages baked into the agent image at build time.
+  # apt_packages: [postgresql-client]
+  # Replace the pinned Debian base. Must be Debian/Ubuntu based and pinned by digest.
+  # base_image: "repo:tag@sha256:..."
+
+workspace:
+  # bind: the host directory is mounted (live, but slow on macOS/Windows file sharing).
+  # volume: the agent gets its own copy in a named volume (fast); `kennel up` seeds it from your
+  # git repository and `kennel fetch` brings its commits back, gated on protected files.
+  mode: volume
+  # Regenerable directories kept on named volumes, off the slow mount: auto | none | [paths].
+  cache_volumes: auto
+
+devcontainer:
+  # Where the generated container files live. `kennel init --merge` uses .devcontainer/kennel
+  # so an existing devcontainer setup is left untouched.
+  dir: .devcontainer
+
+# Dev-server ports published on 127.0.0.1 through the gateway (`kennel ports ls|add|rm`).
+# The server inside the sandbox must listen on 0.0.0.0, not localhost.
+ports: [8080]
+
+hardening:
+  readonly_rootfs: false
+  # e.g. "runsc" for gVisor, if installed.
+  runtime: ""
+  pids_limit: 1024
+  memory: "8g"
+  cpus: 4
+
+gateway:
+  memory: "256m"
+  pids_limit: 256
+  audit_max_size_mb: 50
+  audit_max_files: 5
+
+# ADDITIONAL read-only paths. The built-ins below are always protected and cannot be removed by
+# editing this list (use unsafe.unprotect):
+#   .devcontainer, .kennel, .git/hooks, .githooks, .husky, .vscode/tasks.json, .vscode/settings.json, .idea, .claude, .mcp.json
+protected_paths: []
+
+# Credentials are explicit and opt-in. Only the file's location is written here, never its value.
+# The file is mounted read-only at /run/secrets/<name>; `env` exports it as that variable at start.
+# secrets:
+#   - name: github_token
+#     source_file: ~/.config/kennel/github_token
+#     env: GH_TOKEN
+
+git:
+  user_name: ""
+  user_email: ""
+
+# Everything below weakens the sandbox. Uncomment only if you mean it.
+# unsafe:
+#   unprotect: [".vscode/tasks.json"]   # let the agent write a built-in protected path
+#   publish_all_interfaces: false       # publish previews on every host interface, not just 127.0.0.1
+#   cap_add: [SYS_PTRACE]               # the only capability that may be added (debuggers)
+#   audit_fail_open: false              # keep allowing connections if the audit log cannot be written
+#   unpinned_base_image: false          # permit agent.base_image without a digest
+#   allow_old_engine: false             # skip the Docker Engine >= 28 requirement (ADR 0001)
