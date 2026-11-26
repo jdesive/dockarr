@@ -3,7 +3,7 @@ export const PLEX_COMPOSE_FILE = [{
     container_name: "plex",
     environment: [
         "PUID=$PUID",
-        "GUID=$GUID",
+        "PGID=$GUID",
         "TZ=$Timezone",
         "PLEX_CLAIM=$PlexClaim",
         "ADVERTISE_IP=$PlexIp",

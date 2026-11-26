@@ -3,7 +3,7 @@ export const JELLYFIN_COMPOSE_FILE = [{
     container_name: "jellyfin",
     environment: [
         "PUID=$PUID",
-        "GUID=$GUID",
+        "PGID=$GUID",
         "TZ=$Timezone",
     ],
     volumes: [
@@ -15,7 +15,7 @@ export const JELLYFIN_COMPOSE_FILE = [{
     ports: [
         "8096:8096/tcp",
         "8920:8920/tcp",
-        "1900:1900/udp",
+        // 1900/udp (DLNA) omitted: conflicts with Plex, and DLNA is a plugin since Jellyfin 10.9
         "7359:7359/udp",
     ],
     labels: [

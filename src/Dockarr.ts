@@ -374,19 +374,19 @@ export class Dockarr {
             case "Linux":
                 switch (serviceName.toLowerCase()) {
                     case "plex":
-                        execSync('sudo apt-get install plex-desktop', {stdio: 'inherit'});
+                        execSync('sudo snap install plex-desktop', {stdio: 'inherit'});
                         break;
                     case "plexmediaserver":
                         execSync('sudo apt-get install plexmediaserver', {stdio: 'inherit'});
                         break;
                     case "steam":
-                        execSync('sudo add-apt-repository multiverse && sudp apt-get update && sudo apt-get install steam', {stdio: 'inherit'});
+                        execSync('sudo add-apt-repository multiverse && sudo apt-get update && sudo apt-get install steam', {stdio: 'inherit'});
                         break;
                     case "spotify":
-                        execSync('sudo snap install spotify -y', {stdio: 'inherit'});
+                        execSync('sudo snap install spotify', {stdio: 'inherit'});
                         break;
                     case "tidal":
-                        execSync('sudo snap install tidal -y', {stdio: 'inherit'});
+                        execSync('sudo snap install tidal', {stdio: 'inherit'});
                         break;
                     case "docker":
                         console.log(chalk.blue('Installing Docker using the official convenience script...'));
@@ -406,7 +406,7 @@ export class Dockarr {
                         execSync('winget install -e --id Plex.Plex', {stdio: 'inherit'});
                         break;
                     case "plexmediaserver":
-                        execSync('winget install -e --id Plex.PlexMediaPlayer', {stdio: 'inherit'});
+                        execSync('winget install -e --id Plex.PlexMediaServer', {stdio: 'inherit'});
                         break;
                     case "steam":
                         execSync('winget install -e --id Valve.Steam', {stdio: 'inherit'});

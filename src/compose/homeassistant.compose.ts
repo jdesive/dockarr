@@ -4,7 +4,7 @@ export const HOMEASSISTANT_COMPOSE_FILE = [{
     environment: [
         "TZ=$Timezone",
         "PUID=$PUID",
-        "$GUID=$GUID"
+        "PGID=$GUID"
     ],
     volumes: [
         "$ConfigDir/homeassistant:/config"
