@@ -1,0 +1,3 @@
+# kennel:generated sha256=bd34c0f8912eedfe5b30f9b25594b9f8ff964e9db07dfc1a2eaef208823663b8
+# Per-session gateway state (effective policy, audit log, protected-path overrides) is local.
+state/

@@ -1,0 +1,4 @@
+# kennel:generated sha256=03663c00e49c95b6dece926ca1213bc3e856254217cdd0d0aad7f49adc28a607
+# Generated files are read by shells and Docker inside Linux containers: keep LF line endings even
+# on Windows checkouts, or the entrypoint fails with "bad interpreter".
+* text eol=lf

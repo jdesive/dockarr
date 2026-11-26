@@ -1,0 +1,24 @@
+# kennel egress policy: which hosts the agent may reach. Everything else is denied.
+# Committed to the repository and read-only inside the sandbox. Reference: docs/policy.md.
+#
+# The agent's own hosts (api.anthropic.com, ...) are added automatically from `agent:` in
+# config.yaml; they are not listed here. `kennel prepare` prints the effective policy.
+version: 1
+
+# Reviewed, exact-host allowlists for the package registries of the stacks detected in this repo.
+# Others: github, github-raw, github-codeload, docker-hub, claude-updates (see docs/policy.md).
+# Allowing `github` lets the agent push anywhere your token can reach: add it deliberately.
+presets: [node, java]
+
+# Your own rules. Exact hostnames are safest. `*.example.com` matches exactly one label below
+# example.com; wildcards over user-content domains (github.io, s3.amazonaws.com, ...) are refused.
+rules: []
+#  - host: api.example.com
+#    ports: [443]
+#    note: "partner API"
+#  - host: telemetry.example.com
+#    action: deny
+
+limits: {}
+#  idle_timeout: 60s
+#  max_conns: 256
