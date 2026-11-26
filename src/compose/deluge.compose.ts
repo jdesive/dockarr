@@ -3,7 +3,7 @@ export const DELUGE_COMPOSE_FILE = [{
     container_name: "deluge",
     environment: [
         "PUID=$PUID",
-        "GUID=$GUID",
+        "PGID=$GUID",
         "TZ=$Timezone",
         "UMASK_SET=022", // Optional,
         "VPN_ENABLED=$VPNEnabled",

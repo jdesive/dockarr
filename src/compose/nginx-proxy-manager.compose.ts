@@ -3,7 +3,7 @@ export const NPM_COMPOSE_FILE = [{
     container_name: "nginx-proxy-manager",
     environment: [
         "PUID=$PUID",
-        "GUID=$GUID",
+        "PGID=$GUID",
         "TZ=$Timezone",
         "UMASK_SET=022" // Optional
     ],
