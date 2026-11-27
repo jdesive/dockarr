@@ -181,7 +181,8 @@ helper commands for you ex. (`dockarr get-api-keys`)
 
 ## Development
 - `npm run build` compiles to `bin/`; run the CLI locally with `node bin/src/cli.js`.
-- `npm test` runs the unit tests in `test/` (requires Node 21+). They also check every compose template for unknown placeholders, missing PGID, duplicate container names and host port conflicts, so run them after adding a service.
+- `npm test` runs the unit tests in `test/` (requires Node 22+). They also check every compose template for unknown placeholders, missing PGID, duplicate container names, host port conflicts and consistent `/data` paths, so run them after adding a service.
+- CI also runs `scripts/ci/compose-config.sh`, which renders every service and checks it with `docker compose config`, and `scripts/ci/integration.sh`, which starts the core services on real Docker and checks that a download hardlinks into the media library. Both need `npm run build` and Docker.
 
 ## Disclaimer
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

@@ -31,6 +31,9 @@
   ],
   "author": "Jack DeSive",
   "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
   "devDependencies": {
     "@types/node": "^18.15.11",
     "typescript": "^5.0.2"
