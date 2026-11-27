@@ -14,7 +14,6 @@ export const HOMEASSISTANT_COMPOSE_FILE = [{
       "8123:8123"
     ],
     labels: [
-        "com.centurylinklabs.watchtower.enable=true",
         "com.dockarr.generated=true",
         "com.dockarr.version=$DockarrVersion",
         "com.dockarr.stack=$StackName",

@@ -285,7 +285,7 @@ export class Dockarr {
 
         let composeManifest = new Map();
         for (let dockerComposeFile of servicesToDeploy) {
-            if (dockerComposeFile.name === 'Portainer' || dockerComposeFile.name === 'WatchTower') {
+            if (dockerComposeFile.name === 'Portainer') {
                 console.log(chalk.yellow(`Warning: ${dockerComposeFile.name} requires access to the Docker socket (${options.dockerSock}). This gives the container significant control over the host.`));
             }
 
@@ -346,7 +346,6 @@ export class Dockarr {
         const services = [
             {name: 'Sonarr', port: '8989'},
             {name: 'Radarr', port: '7878'},
-            {name: 'Readarr', port: '8787'},
             {name: 'Lidarr', port: '8686'},
             {name: 'Prowlarr', port: '9696'},
         ]

@@ -27,7 +27,6 @@ export const PLEX_COMPOSE_FILE = [{
         "8324:8324/tcp"
     ],
     labels: [
-        "com.centurylinklabs.watchtower.enable=true",
         "com.dockarr.generated=true",
         "com.dockarr.version=$DockarrVersion",
         "com.dockarr.stack=$StackName",

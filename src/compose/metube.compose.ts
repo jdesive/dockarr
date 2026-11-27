@@ -14,7 +14,6 @@ export const METUBE_COMPOSE_FILE = [{
     ],
     restart: "always",
     labels: [
-        "com.centurylinklabs.watchtower.enable=true",
         "com.dockarr.generated=true",
         "com.dockarr.version=$DockarrVersion",
         "com.dockarr.stack=$StackName",

@@ -19,7 +19,6 @@ export const JELLYFIN_COMPOSE_FILE = [{
         "7359:7359/udp",
     ],
     labels: [
-        "com.centurylinklabs.watchtower.enable=true",
         "com.dockarr.generated=true",
         "com.dockarr.version=$DockarrVersion",
         "com.dockarr.stack=$StackName",

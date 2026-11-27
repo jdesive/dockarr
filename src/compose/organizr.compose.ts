@@ -14,7 +14,6 @@ export const ORGANIZR_COMPOSE_FILE = [{
       "8443:80"
     ],
     labels: [
-        "com.centurylinklabs.watchtower.enable=true",
         "com.dockarr.generated=true",
         "com.dockarr.version=$DockarrVersion",
         "com.dockarr.stack=$StackName",

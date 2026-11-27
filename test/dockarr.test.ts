@@ -62,6 +62,12 @@ describe("parseServiceSelection", () => {
         }
     });
 
+    it("no longer offers removed services", () => {
+        for (const name of ["watchtower", "readarr", "lunasea", "emulatorjs", "xteve", "kitana", "petio", "ubooquity", "requestrr"]) {
+            assert.throws(() => dockarr.parseServiceSelection(name), /Unknown service/, name);
+        }
+    });
+
     it("rejects an empty selection", () => {
         assert.throws(() => dockarr.parseServiceSelection(" , "), /No services selected/);
     });

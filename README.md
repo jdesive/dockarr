@@ -29,24 +29,15 @@ improper or illegal use of this repository, it is provided for educational purpo
 - **[SABnzbd](https://sabnzbd.org/)**: Usenet downloader tool  
 - **[Prowlarr](https://github.com/Prowlarr/Prowlarr)**: Prowlarr is an indexer manager/proxy built on the popular arr .net/reactjs base stack to integrate with your various PVR apps  
 - **[Deluge](https://deluge-torrent.org/)**: Torrent downloader tool
-- **[Requestrr](https://github.com/darkalfx/requestrr)**: Requestrr is a chatbot used to simplify using services like Sonarr/Radarr/Overseerr/Ombi via the use of chat!
 - **[Nginx-Proxy-Manager](https://nginxproxymanager.com/)**: Expose web services on your network · Free SSL with Let's Encrypt · Designed with security in mind · Perfect for home networks
-- **[Watchtower](https://containrrr.dev/watchtower/)**: A container-based solution for automating Docker container base image updates
 - **[Portainer](https://www.portainer.io/)**: Lightweight service delivery platform for containerized applications that can be used to manage Docker, Swarm, Kubernetes and ACI environments.
-- **[Ubooquity](https://vaemendis.net/ubooquity/)**: A free home server for your comics and ebooks library
 - **[Mylar3](https://github.com/mylar3/mylar3)**: A automated Comic Book (cbr/cbz) downloader program for use with NZB and torrents
-- **[Readarr](https://readarr.com/)**: Readarr is a ebook collection manager for Usenet and BitTorrent users
-- **[EmulatorJS](https://github.com/linuxserver/emulatorjs)**: Self hosted web based retro emulation front end with rom and art management.
 - **[HomeAssistant](https://www.home-assistant.io/)**: Home Assistant allows you to get on top of your energy use with its home energy management feature.
 - **[Organizr](https://github.com/Organizr)**: Organizr allows you to set up "Tabs" that will be loaded all in one webpage. You can then work on your server with ease.
 - **[Duplicati](https://www.duplicati.com/)**: Free backup software to store encrypted backups online
 - **[TubeSync](https://github.com/meeb/tubesync)**: TubeSync is a PVR for YouTube
 - **[MeTube](https://github.com/alexta69/metube)**: Web GUI for youtube-dl. Allows you to download videos from YouTube and dozens of other sites.
-- **[Kitana](https://github.com/pannal/Kitana)**: A responsive Plex plugin web frontend
-- **[LunaSea](https://www.lunasea.app/)**: LunaSea is a fully featured, open source self-hosted controller focused on giving you a seamless experience between all of your self-hosted media software remotely on your devices.
-- **[Petio](https://petio.tv/)**: Petio is a third party companion app available to Plex server owners to allow their users to request, review and discover content.
 - **[ADGuardHome](https://adguard.com/en/welcome.html)**: AdGuard is the best way to get rid of annoying ads and online tracking and protect your computer from malware
-- **[xTeVe](https://github.com/xteve-project/xTeVe)**: M3U Proxy for Plex DVR and Emby Live TV
 - **[Mealie](https://mealie.io/)**: An intuitive and easy to use recipe management app.
 - **[Kavita](https://www.kavitareader.com/)**: Lighting fast with a slick design, Kavita is a rocket fueled self-hosted digital library which supports a vast array of file formats.
 - **[Jellyfin](https://jellyfin.org/)**: Jellyfin is the volunteer-built media solution that puts you in control of your media. Stream to any device from your own server, with no strings attached. Your media, your server, your way.
@@ -111,23 +102,15 @@ Note: This does not remove media or configuration files for the HTPC.
 - [Lidarr](https://lidarr.audio/) | http://localhost:8686
 - [Overseerr](https://overseerr.dev/) | http://localhost:5055
 - [Deluge](https://deluge-torrent.org/) | http://localhost:8112
-- [Requestrr](https://github.com/darkalfx/requestrr) | http://localhost:4545
 - [NGINX-proxy-manager](https://nginxproxymanager.com/) | http://localhost:81
 - [Portainer](https://www.portainer.io/) | http://localhost:9000
-- [Ubooquity](https://vaemendis.net/ubooquity/) | http://localhost:2203/ubooquity/admin
 - [Mylar3](https://github.com/mylar3/mylar3) | http://localhost:8090
-- [Readarr](https://readarr.com/) | http://localhost:8787
-- [EmulatorJS](https://github.com/linuxserver/emulatorjs) | Management: http://localhost:3000 Application: http://localhost:8088
 - [HomeAssistant](https://www.home-assistant.io/) | http://localhost:8123
 - [Organizr](https://github.com/Organizr) | http://localhost:8443
 - [Duplicati](https://www.duplicati.com/) | http://localhost:8200
 - [TubeSync](https://github.com/meeb/tubesync) | http://localhost:4848
 - [MeTube](https://github.com/alexta69/metube) | http://localhost:8081
-- [Kitana](https://github.com/pannal/Kitana) | http://localhost:31337
-- [LunaSea](https://www.lunasea.app/) | http://localhost:5423
-- [Petio](https://petio.tv/) | http://localhost:7777
 - [ADGuardHome](https://adguard.com/en/welcome.html) | http://localhost:3001
-- [xTeVe](https://github.com/xteve-project/xTeVe) | http://localhost:34400
 - [Mealie](https://mealie.io/) | http://localhost:9925
 - [Kavita](https://www.kavitareader.com/) | http://localhost:5000
 - [Jellyfin](https://jellyfin.org/) | http://localhost:8096
@@ -140,7 +123,7 @@ simply with wanting an easily deployable and producible script for Plex and comp
 
 ### Security
 While Dockarr aims to simplify deployment, it is important to follow security best practices:
-- **Docker Socket**: Services like Portainer and Watchtower require access to `/var/run/docker.sock`. This provides the container with near-root access to the host machine. Only use these services if you trust them and understand the risks.
+- **Docker Socket**: Portainer requires access to `/var/run/docker.sock`. This provides the container with near-root access to the host machine. Only use these services if you trust them and understand the risks.
 - **Insecure Connections**: By default, many services are exposed over plain HTTP. It is highly recommended to use a reverse proxy (like the included Nginx Proxy Manager) with SSL/TLS for all external access.
 - **Secrets**: The generated compose file (`~/.dockarr/<name>/<name>.yaml`) contains your Plex claim and VPN credentials, so Dockarr makes it readable only by your user. Note that anyone with access to Docker can still read container environment variables via `docker inspect`.
 - **API Keys**: Commands like `get-api-keys` fetch information over plain HTTP within your network. Ensure your local network is secure.

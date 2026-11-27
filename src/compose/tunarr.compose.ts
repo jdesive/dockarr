@@ -15,7 +15,6 @@ export const TUNARR_COMPOSE_FILE = [{
         "8001:8000"
     ],
     labels: [
-        "com.centurylinklabs.watchtower.enable=true",
         "com.dockarr.generated=true",
         "com.dockarr.version=$DockarrVersion",
         "com.dockarr.stack=$StackName",
