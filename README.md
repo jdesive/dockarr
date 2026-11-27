@@ -68,7 +68,7 @@ Ubuntu 22.04 +
 Windows 10 +
 
 ### Installing
-You must have [Node.JS](https://nodejs.org/en) & [NPM](https://www.npmjs.com/) installed.  
+You must have [Node.JS](https://nodejs.org/en) & [NPM](https://www.npmjs.com/) installed, plus Docker with the Compose plugin (`docker compose`). You can install Docker with `dockarr install docker`.  
 To install dockarr run the following command:  
 `npm install -g dockarr`
 
@@ -76,25 +76,26 @@ You can now see the command options with `dockarr --help`
 
 ### Starting the Stack
 To create your first stack/deployment you will run the `dockarr create [options] <name>` command and supply your settings when asked. 
+Services can be picked by name or by their number in the list, e.g. `-s plex,sonarr,radarr`. If you pick Deluge you will be asked for your VPN login (or pass `--vpn false`).
 
 If you want to quick start you can copy the command below:  
-Linux: `dockarr create -c /opt/htpc -d /mnt/Media -w /opt/htpc/tmp -s 1,2,3,6,8,9,11,13,14 my-first-dockarr`  
-Windows: `dockarr create -c ./htpc -d ./Media -w ./htpc/tmp -s 1,2,3,6,8,9,11,13,14 my-first-dockarr`
+Linux: `dockarr create -c /opt/htpc -d /mnt/Media -w /opt/htpc/tmp -s plex,sonarr,radarr,bazarr,prowlarr,seerr,tautulli,sabnzbd,deluge my-first-dockarr`  
+Windows: `dockarr create -c ./htpc -d ./Media -w ./htpc/tmp -s plex,sonarr,radarr,bazarr,prowlarr,seerr,tautulli,sabnzbd,deluge my-first-dockarr`
+
+`create` only writes the compose file. Start the stack with `dockarr start my-first-dockarr`. To change an existing deployment, re-run `create` with `--force`.
 
 Now you can move to configuring the individual services via the links above in *Service Links* section below.
 
 ### Updating the stack
 In order to update the stack (pull new docker images and restart services), you can run `dockarr update <name>`. 
-This will stop all services, update this repo, pull down new docker images if available and restart the services to bring them back up.
-
-Note: This will cause downtime for your HTPC, no services will be running during this process. 
+This pulls new docker images while your services keep running, then recreates only the containers whose image changed. Use `-s` to update specific services.
 
 ### Stopping the stack
 To stop the stack you can run `dockarr stop <name>`. This will simply just stop all the services, you can then simply 
 run `dockarr start <name>` again to start the stack back up.
 
 ### Deleting the stack
-To delete the stack you just need to run `dockarr remove <name>`. This will stop and remove all services.
+To delete the stack you just need to run `dockarr remove <name>`. This will stop and remove all services after asking for confirmation (skip it with `-y`).
 
 Note: This does not remove media or configuration files for the HTPC.
 
