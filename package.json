@@ -5,11 +5,16 @@
   "description": "An opinionated CLI tool for installing and managing *arr applications, Plex Media Server, and various other services that make up a HTPC (Home Theater Personal Computer).",
   "scripts": {
     "build": "npx tsc",
-    "prepublish": "npx tsc"
+    "prepublish": "npx tsc",
+    "test": "npx tsc && node --test \"bin/test/**/*.test.js\""
   },
   "bin": {
     "dockarr": "bin/src/cli.js"
   },
+  "files": [
+    "bin/src",
+    "bin/package.json"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jdesive/dockarr.git"
