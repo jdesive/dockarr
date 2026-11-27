@@ -141,6 +141,7 @@ simply with wanting an easily deployable and producible script for Plex and comp
 While Dockarr aims to simplify deployment, it is important to follow security best practices:
 - **Docker Socket**: Services like Portainer and Watchtower require access to `/var/run/docker.sock`. This provides the container with near-root access to the host machine. Only use these services if you trust them and understand the risks.
 - **Insecure Connections**: By default, many services are exposed over plain HTTP. It is highly recommended to use a reverse proxy (like the included Nginx Proxy Manager) with SSL/TLS for all external access.
+- **Secrets**: The generated compose file (`~/.dockarr/<name>/<name>.yaml`) contains your Plex claim and VPN credentials, so Dockarr makes it readable only by your user. Note that anyone with access to Docker can still read container environment variables via `docker inspect`.
 - **API Keys**: Commands like `get-api-keys` fetch information over plain HTTP within your network. Ensure your local network is secure.
 - **Image Versions**: Dockarr currently uses `:latest` tags for ease of use and updates. For production environments, consider pinning to specific versions or digests in the generated compose files for better reproducibility.
 
