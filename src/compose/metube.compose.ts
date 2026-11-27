@@ -7,7 +7,7 @@ export const METUBE_COMPOSE_FILE = [{
         "TZ=$Timezone"
     ],
     volumes: [
-        "$DataDir/YouTube:/downloads",
+        "$DataDir/media/youtube:/downloads",
     ],
     ports: [
         "8081:8081"

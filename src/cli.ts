@@ -37,8 +37,7 @@ async function run() {
         .option('--vpn-network [vpnNetwork]', 'Deluge VPN Network', "192.168.1.0/24")
         .option('--base-url [baseUrl]', 'Base Url for the stack, if making public facing', undefined)
         .requiredOption('-c, --config-dir [configDir]', 'Configuration file parent directory full path')
-        .requiredOption('-d, --data-dir [dataDir]', 'Data directory full path where the media libraries are located')
-        .requiredOption('-w, --work-dir [workDir]', 'Working directory where files are temporarily stored')
+        .requiredOption('-d, --data-dir [dataDir]', 'Data directory full path; holds downloads/ and media/ on one filesystem so files can be hardlinked')
         .option('-f, --force', 'Overwrite the compose file of an existing deployment')
         .action(async (name, options) => dockarr.createStack(name, options));
 

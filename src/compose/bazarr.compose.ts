@@ -9,8 +9,7 @@ export const BAZARR_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/bazarr:/config",
-        "$DataDir/Movies:/movies",
-        "$DataDir/TV:/tv"
+        "$DataDir/media:/data/media"
     ],
     ports: [
         "6767:6767"

@@ -9,9 +9,7 @@ export const SONARR_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/sonarr:/config",
-        "$DataDir/TV:/tv",
-        "$WorkDir/downloads:/downloads",
-        "$WorkDir/incomplete-downloads:/incomplete-downloads"
+        "$DataDir:/data"
     ],
     ports: [
         "8989:8989"

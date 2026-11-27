@@ -9,13 +9,11 @@ export const ADGUARDHOME_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/adguardhome/work:/opt/adguardhome/work",
-        "$DataDir/adguardhome/config:/opt/adguardhome/conf"
+        "$ConfigDir/adguardhome/conf:/opt/adguardhome/conf"
     ],
     ports: [
-        "5354:53/tcp",
-        "5354:53/udp",
-        "67:67/udp",
-        "68:68/udp",
+        "53:53/tcp",
+        "53:53/udp",
         "8082:8082/tcp",
         "4433:443/tcp",
         "4433:443/udp",

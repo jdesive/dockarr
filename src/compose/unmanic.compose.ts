@@ -9,8 +9,8 @@ export const UNMANIC_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/unmanic:/config",
-        "$DataDir:/library",
-        "$WorkDir/unmanic:/tmp/unmanic",
+        "$DataDir/media:/data/media",
+        "$ConfigDir/unmanic/cache:/tmp/unmanic",
     ],
     ports: [
         "8888:8888"

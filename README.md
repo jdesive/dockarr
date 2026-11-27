@@ -65,8 +65,8 @@ To create your first stack/deployment you will run the `dockarr create [options]
 Services can be picked by name or by their number in the list, e.g. `-s plex,sonarr,radarr`. If you pick Deluge you will be asked for your VPN login (or pass `--vpn false`).
 
 If you want to quick start you can copy the command below:  
-Linux: `dockarr create -c /opt/htpc -d /mnt/Media -w /opt/htpc/tmp -s plex,sonarr,radarr,bazarr,prowlarr,seerr,tautulli,sabnzbd,deluge my-first-dockarr`  
-Windows: `dockarr create -c ./htpc -d ./Media -w ./htpc/tmp -s plex,sonarr,radarr,bazarr,prowlarr,seerr,tautulli,sabnzbd,deluge my-first-dockarr`
+Linux: `dockarr create -c /opt/htpc -d /mnt/data -s plex,sonarr,radarr,bazarr,prowlarr,seerr,tautulli,sabnzbd,deluge my-first-dockarr`  
+Windows: `dockarr create -c ./htpc -d ./data -s plex,sonarr,radarr,bazarr,prowlarr,seerr,tautulli,sabnzbd,deluge my-first-dockarr`
 
 `create` only writes the compose file. Start the stack with `dockarr start my-first-dockarr`. To change an existing deployment, re-run `create` with `--force`.
 
@@ -139,11 +139,41 @@ When configuring a service to connect to another service there are a few ways to
       (Imagine going out your front door, into the garage, and then into the kitchen every time you want a snack)
 
 ### Filesystem
-There are 3 main parent directories created by this repository. You can configure them in the `start.sh` script.
+Dockarr uses two parent directories, set with `create`:
 
-- `Config Dir`: This is where all configuration, SSL certs, and various persistent settings are stored. (We suggest this be on your main drive, SSD)  
-- `Data Dir`: This is the Media parent directory. Here is where you Movies, TV Shows, Music, Photos, etc. are stored. (We suggest this be a mounted share from a NAS or SAN)  
-- `Work Dir`: This is the working directory for all media. Files that are in the process of downloading or other various temp files are stored here. (We suggest this also be on your main drive, SSD)
+- `-c, --config-dir`: configuration, SSL certs, Plex transcodes and other persistent settings. (We suggest your main drive, SSD)
+- `-d, --data-dir`: downloads and media together, so that Sonarr, Radarr and Lidarr can [hardlink and atomically move](https://wiki.servarr.com/docker-guide#consistent-and-well-planned-paths) finished downloads instead of copying them. It must be a single filesystem. (A local disk, or one mounted share from a NAS or SAN)
+
+`create` sets up this layout inside the data directory:
+
+```
+data/
+├── downloads/
+│   ├── torrents/   Deluge
+│   └── usenet/     SABnzbd
+└── media/
+    ├── movies/  tv/  music/  books/  comics/  youtube/
+```
+
+Every container sees it at the same path, `/data`. When you configure the apps:
+- Set the download clients' download folders inside `/data/downloads/torrents` or `/data/downloads/usenet`.
+- Set the root folders in Sonarr, Radarr and Lidarr to `/data/media/tv`, `/data/media/movies` and `/data/media/music`.
+- Add libraries in Plex or Jellyfin from `/data/media`.
+
+Dockarr 1.x used separate `Data` and `Work` directories with different container paths. Those deployments need their paths and root folders updated for 2.0.
+
+### AdGuard Home and port 53
+AdGuard Home publishes DNS on port 53. On Ubuntu, systemd-resolved already listens there, and `create` warns when it finds something on port 53. To free the port, as [AdGuard Home recommends](https://github.com/AdguardTeam/AdGuardHome/wiki/Docker#resolved-daemon):
+
+```
+sudo mkdir -p /etc/systemd/resolved.conf.d
+printf '[Resolve]\nDNS=127.0.0.1\nDNSStubListener=no\n' | sudo tee /etc/systemd/resolved.conf.d/adguardhome.conf
+sudo mv /etc/resolv.conf /etc/resolv.conf.backup
+sudo ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+sudo systemctl reload-or-restart systemd-resolved
+```
+
+In the AdGuard Home setup wizard, keep the admin interface on port 3000 so it stays reachable at http://localhost:3001. DHCP ports are not published.
 
 ### Service Config
 Services are left to set up however you choose via their UI as listed in *Service Links* section. However, there are some 

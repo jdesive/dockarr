@@ -9,9 +9,7 @@ export const RADARR_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/radarr:/config",
-        "$DataDir/Movies:/movies",
-        "$WorkDir/downloads:/downloads",
-        "$WorkDir/incomplete-downloads:/incomplete-downloads"
+        "$DataDir:/data"
     ],
     ports: [
         "7878:7878"

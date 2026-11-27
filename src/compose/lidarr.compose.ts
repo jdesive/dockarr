@@ -9,9 +9,7 @@ export const LIDARR_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/lidarr:/config",
-        "$DataDir/Music:/music",
-        "$WorkDir/downloads:/downloads",
-        "$WorkDir/incomplete-downloads:/incomplete-downloads"
+        "$DataDir:/data"
     ],
     ports: [
         "8686:8686"

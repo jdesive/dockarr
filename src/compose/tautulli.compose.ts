@@ -9,7 +9,7 @@ export const TAUTULLI_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/tautulli:/config",
-        "$ConfigDir/plex/logs:/plex_logs:ro",
+        "$ConfigDir/plex/Library/Application Support/Plex Media Server/Logs:/plex_logs:ro",
     ],
     ports: [
         "8181:8181"

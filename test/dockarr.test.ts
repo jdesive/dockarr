@@ -6,9 +6,9 @@ import {COMPOSE_FILES} from "../src/compose-files.models";
 const dockarr = new Dockarr();
 
 const SAMPLE_VALUES = {
-    ConfigDir: "/opt/htpc", WorkDir: "/opt/htpc/tmp", DataDir: "/mnt/Media", PlexClaim: "claim",
+    ConfigDir: "/opt/htpc", DataDir: "/mnt/data", PlexClaim: "claim",
     DockerSock: "/var/run/docker.sock", GUID: "1000", PUID: "1000", Timezone: "America/Chicago",
-    PlexIp: "http://192.168.1.2:32400", VPNEnabled: "true", VPNUser: "user", VPNPass: "pass",
+    PlexIp: "http://192.168.1.2:32400", VPNEnabled: "yes", VPNUser: "user", VPNPass: "pass",
     VPNProv: "pia", VPNClient: "openvpn", VPNNetwork: "192.168.1.0/24", DockarrVersion: "0.0.0",
     StackName: "test", BaseUrl: "example.com",
 };
@@ -154,5 +154,70 @@ describe("compose templates", () => {
                 seen.set(key, file);
             }
         }
+    });
+
+    it("mount data at the same path under /data, so hardlinks and atomic moves work", () => {
+        // These images expect their own download or source paths and never hand files to the *arr apps.
+        const ownPaths = ["MeTube", "TubeSync", "Duplicati"];
+        for (const {file, service} of allServices) {
+            if (ownPaths.includes(file)) continue;
+            for (const volume of service.volumes ?? []) {
+                const [host, container] = String(volume).split(":");
+                if (!host.startsWith(SAMPLE_VALUES.DataDir)) continue;
+                assert.equal(container, "/data" + host.slice(SAMPLE_VALUES.DataDir.length), `${file} mounts ${volume}`);
+            }
+        }
+    });
+
+    it("don't put literal quotes in environment values", () => {
+        for (const {file, service} of allServices) {
+            for (const entry of service.environment ?? []) {
+                assert.ok(!/["']/.test(entry), `${file} sets ${entry}`);
+            }
+        }
+    });
+
+    it("give Deluge the NET_ADMIN capability its VPN needs", () => {
+        const deluge = allServices.find(({file}) => file === "Deluge")!.service;
+        assert.ok(deluge.cap_add?.includes("NET_ADMIN"));
+    });
+
+    it("publish AdGuard Home DNS on port 53 and keep its config under the config directory", () => {
+        const adguard = allServices.find(({file}) => file === "ADGuardHome")!.service;
+        assert.ok(adguard.ports.includes("53:53/tcp") && adguard.ports.includes("53:53/udp"));
+        for (const volume of adguard.volumes) {
+            assert.ok(volume.startsWith(SAMPLE_VALUES.ConfigDir + "/"), volume);
+        }
+    });
+
+    it("point Tautulli at Plex's real log directory", () => {
+        const tautulli = allServices.find(({file}) => file === "Tautulli")!.service;
+        assert.ok(tautulli.volumes.includes(
+            "/opt/htpc/plex/Library/Application Support/Plex Media Server/Logs:/plex_logs:ro"));
+    });
+});
+
+describe("procNetHasPort", () => {
+    const table = [
+        "  sl  local_address rem_address   st tx_queue rx_queue tr tm->when retrnsmt   uid  timeout inode",
+        "   0: 3500007F:0035 00000000:0000 0A 00000000:00000000 00:00000000 00000000   991        0 1 1",
+        "   1: 00000000:1F90 00000000:0000 0A 00000000:00000000 00:00000000 00000000  1000        0 2 1",
+        "   2: 0100007F:9C40 0100007F:0035 01 00000000:00000000 00:00000000 00000000  1000        0 3 1",
+    ].join("\n");
+
+    it("finds a listener on the port in the given state", () => {
+        assert.equal(dockarr.procNetHasPort(table, 53, "0A"), true);
+        assert.equal(dockarr.procNetHasPort(table, 8080, "0A"), true);
+    });
+
+    it("ignores other ports, other states and remote addresses", () => {
+        assert.equal(dockarr.procNetHasPort(table, 53, "07"), false);
+        assert.equal(dockarr.procNetHasPort(table, 40000, "0A"), false);
+        assert.equal(dockarr.procNetHasPort(table, 5353, "0A"), false);
+    });
+
+    it("handles IPv6 addresses", () => {
+        const v6 = "  sl  local_address remote_address st\n   0: 00000000000000000000000000000000:0035 00000000000000000000000000000000:0000 07";
+        assert.equal(dockarr.procNetHasPort(v6, 53, "07"), true);
     });
 });

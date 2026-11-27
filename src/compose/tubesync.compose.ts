@@ -9,7 +9,7 @@ export const TUBESYNC_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/tubesync:/config",
-        "$DataDir/YouTube:/downloads",
+        "$DataDir/media/youtube:/downloads",
     ],
     ports: [
         "4848:4848"

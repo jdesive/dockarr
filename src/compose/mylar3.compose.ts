@@ -9,8 +9,7 @@ export const MYLAR3_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/mylar3:/config",
-        "$DataDir/Comics:/comics",
-        "$WorkDir/downloads:/downloads"
+        "$DataDir:/data"
     ],
     ports: [
         "8090:8090"

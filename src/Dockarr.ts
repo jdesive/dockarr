@@ -9,6 +9,18 @@ import * as YAML from "yaml";
 import {DOCKARR_VERSION, dockarrDir} from "./constants";
 import axios from "axios";
 
+// Downloads and media share one mount so the *arr apps can hardlink and move files atomically.
+export const DATA_DIRS = [
+    'downloads/torrents',
+    'downloads/usenet',
+    'media/movies',
+    'media/tv',
+    'media/music',
+    'media/books',
+    'media/comics',
+    'media/youtube',
+];
+
 const DOCKER_REQUIRED = 'Dockarr needs Docker with the Compose plugin (v2 or later). Install it from https://docs.docker.com/get-docker/ and check that "docker compose version" works.';
 
 export class Dockarr {
@@ -282,7 +294,6 @@ export class Dockarr {
         console.log(chalk.blue('Generating the docker-compose manifest...'));
         const templateValues: Record<string, string | undefined> = {
             ConfigDir: options.configDir,
-            WorkDir: options.workDir,
             DataDir: options.dataDir,
             PlexClaim: plexClaimInput,
             DockerSock: options.dockerSock,
@@ -290,7 +301,8 @@ export class Dockarr {
             PUID: options.puid,
             Timezone: options.timezone,
             PlexIp: plexAdvertisedIp,
-            VPNEnabled: options.vpn,
+            // The Deluge image only recognises "yes" and "no".
+            VPNEnabled: options.vpn === 'false' ? 'no' : 'yes',
             VPNUser: vpnUser,
             VPNPass: vpnPass,
             VPNProv: options.vpnProv,
@@ -323,6 +335,16 @@ export class Dockarr {
             }
         )));
 
+        if (this.isComposeSelected("ADGuardHome", servicesToDeploy) && this.dnsPortInUse()) {
+            console.log(chalk.yellow('Warning: something on this host already listens on port 53, so AdGuard Home will fail to start. ' +
+                'On Ubuntu this is usually the systemd-resolved stub listener; see "AdGuard Home and port 53" in the README.'));
+        }
+
+        // Create the shared data layout up front so Docker doesn't create these directories as root.
+        for (const dir of DATA_DIRS) {
+            fs.mkdirSync(Path.join(options.dataDir, dir), {recursive: true});
+        }
+
         // Save File to disk
         console.log(chalk.blue('Saving docker-compose file to disk...'));
 
@@ -334,11 +356,32 @@ export class Dockarr {
         // The manifest holds secrets (Plex claim, VPN credentials), so keep it owner-only.
         // chmod covers stacks created before this, since mode only applies to new files.
         const manifestPath = Path.join(deploymentDir, name + '.yaml');
-        fs.writeFileSync(manifestPath, String(doc), {mode: 0o600});
+        fs.writeFileSync(manifestPath, doc.toString({lineWidth: 0}), {mode: 0o600});
         fs.chmodSync(manifestPath, 0o600);
         fs.chmodSync(deploymentDir, 0o700);
         console.log(chalk.green('Successfully saved docker-compose manifest!'));
         console.log(chalk.blueBright('Start it with: ') + chalk.white('dockarr start ' + name));
+    }
+
+    // Linux only: checks /proc for a TCP listener or bound UDP socket on port 53, on any address.
+    dnsPortInUse(): boolean {
+        return ['tcp', 'tcp6', 'udp', 'udp6'].some(protocol => {
+            try {
+                return this.procNetHasPort(fs.readFileSync(`/proc/net/${protocol}`, 'utf-8'), 53, protocol.startsWith('tcp') ? '0A' : '07');
+            } catch {
+                return false;
+            }
+        });
+    }
+
+    // Parses a /proc/net/{tcp,udp}[6] table. State 0A is LISTEN; 07 is an unconnected (bound) UDP socket.
+    procNetHasPort(table: string, port: number, state: string): boolean {
+        return table.split('\n').slice(1).some(line => {
+            const [, localAddress, , socketState] = line.trim().split(/\s+/);
+            return localAddress !== undefined
+                && parseInt(localAddress.split(':').pop()!, 16) === port
+                && socketState === state;
+        });
     }
 
     // Recursively replace $Token placeholders in a compose template. Works on the objects

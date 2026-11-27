@@ -9,9 +9,7 @@ export const KAVITA_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/kavita:/kavita/config",
-        "$DataDir/Comics:/comics",
-        "$DataDir/Manga:/manga",
-        "$DataDir/Books:/books",
+        "$DataDir/media:/data/media",
 
     ],
     ports: [

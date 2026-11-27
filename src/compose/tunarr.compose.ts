@@ -8,7 +8,7 @@ export const TUNARR_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/tunarr:/config/tunarr",
-        "$DataDir:/media"
+        "$DataDir/media:/data/media"
     ],
     restart: "always",
     ports: [

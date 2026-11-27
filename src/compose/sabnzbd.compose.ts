@@ -9,8 +9,7 @@ export const SABNZBD_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/sabnzbd:/config",
-        "$WorkDir/downloads:/downloads",
-        "$WorkDir/incomplete-downloads:/incomplete-downloads"
+        "$DataDir/downloads/usenet:/data/downloads/usenet"
     ],
     ports: [
         "8080:8080",

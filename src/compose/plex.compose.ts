@@ -11,8 +11,8 @@ export const PLEX_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/plex:/config",
-        "$WorkDir/plex/transcode:/transcode",
-        "$DataDir:/data"
+        "$ConfigDir/plex/transcode:/transcode",
+        "$DataDir/media:/data/media"
     ],
     restart: "always",
     ports: [

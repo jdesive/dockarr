@@ -9,7 +9,7 @@ export const JELLYFIN_COMPOSE_FILE = [{
     volumes: [
         "$ConfigDir/jellyfin:/config",
         "$ConfigDir/jellyfin/cache:/cache",
-        "$DataDir:/media"
+        "$DataDir/media:/data/media"
     ],
     restart: "always",
     ports: [

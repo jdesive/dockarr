@@ -23,8 +23,11 @@ export const DELUGE_COMPOSE_FILE = [{
     ],
     volumes: [
         "$ConfigDir/deluge:/config",
-        "$WorkDir/downloads:/downloads",
-        "$WorkDir/incomplete-downloads:/incomplete-downloads"
+        "$DataDir/downloads/torrents:/data/downloads/torrents"
+    ],
+    // The image sets up the VPN tunnel and firewall itself, which needs NET_ADMIN.
+    cap_add: [
+        "NET_ADMIN"
     ],
     ports: [
         "8112:8112",
