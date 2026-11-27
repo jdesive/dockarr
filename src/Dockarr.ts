@@ -6,7 +6,7 @@ import * as compose from "docker-compose";
 import readline from "node:readline/promises";
 import {stdin as input, stdout as output} from "process";
 import * as YAML from "yaml";
-import {DOCKARR_VERSION, dockarrDir} from "./cli";
+import {DOCKARR_VERSION, dockarrDir} from "./constants";
 import axios from "axios";
 import os from "os";
 import {execSync} from "child_process";
@@ -38,17 +38,21 @@ export class Dockarr {
     }
 
     async listStacks() {
-        console.log(chalk.blue('List of all deployments:'));
-        const files = fs.readdirSync(dockarrDir, {withFileTypes: true, encoding: 'utf-8'});
-        for (let i = 0; i < files.length; i++) {
-            console.log(chalk.bgGray((i + 1) + ". " + files[i].name));
+        const stacks = fs.existsSync(dockarrDir)
+            ? fs.readdirSync(dockarrDir, {withFileTypes: true}).filter(entry => entry.isDirectory())
+            : [];
+        if (stacks.length === 0) {
+            console.log(chalk.yellow('No deployments yet. Create one with "dockarr create <name>".'));
+            return;
         }
+        console.log(chalk.blue('List of all deployments:'));
+        stacks.forEach((stack, index) => console.log(chalk.bgGray((index + 1) + ". " + stack.name)));
     }
 
     validateName(name: string) {
-        const isValid = /^[a-zA-Z0-9._-]+$/.test(name);
+        const isValid = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(name);
         if (!isValid) {
-            throw new Error(`Invalid deployment name: "${name}". Only alphanumeric characters, dots, underscores, and hyphens are allowed.`);
+            throw new Error(`Invalid deployment name: "${name}". It must start with a letter or number and only contain letters, numbers, dots, underscores, and hyphens.`);
         }
     }
 
@@ -64,262 +68,235 @@ export class Dockarr {
         }
     }
 
-    async stopStack(name: string, options: any) {
+    // Compose options for an existing deployment; throws if it doesn't exist.
+    stackOptions(name: string): compose.IDockerComposeOptions {
         this.validateName(name);
-        const deploymentDir = Path.join(dockarrDir, name);
-        console.log(chalk.blue('Stopping deployment...'));
-        const files = fs.readdirSync(dockarrDir, {withFileTypes: true, encoding: 'utf-8'});
-        for (let i = 0; i < files.length; i++) {
-            if (files[i].name === name) {
-                if (options.service !== undefined) {
-                    await compose.stopMany({
-                        cwd: deploymentDir,
-                        config: [name + ".yaml"],
-                        log: true
-                    }, options.service.split(',')).then(
-                        () => console.log(chalk.green('Finished!')),
-                        err => console.log('something went wrong:', err.message)
-                    );
-                } else {
-                    await compose.stop({cwd: deploymentDir, config: [name + ".yaml"], log: true}).then(
-                        () => console.log(chalk.green('Finished!')),
-                        err => console.log('something went wrong:', err.message)
-                    );
-                }
-                return;
-            }
+        const cwd = Path.join(dockarrDir, name);
+        if (!fs.existsSync(Path.join(cwd, name + '.yaml'))) {
+            throw new Error(`Deployment "${name}" not found. Run "dockarr list" to see your deployments.`);
         }
+        return {cwd, config: [name + '.yaml'], log: true};
+    }
+
+    parseServiceList(service: string | undefined): string[] | undefined {
+        return service?.split(',').map(s => s.trim()).filter(s => s !== '');
+    }
+
+    // docker-compose rejects with {exitCode, err} rather than an Error; its output is already
+    // streamed to the console (log: true), so only report which step failed.
+    async runCompose(step: string, action: () => Promise<unknown>) {
+        try {
+            await action();
+        } catch (result: any) {
+            if (result?.code === 'ENOENT') {
+                throw new Error('Docker was not found. Install it with "dockarr install docker" and make sure "docker compose" works.');
+            }
+            throw new Error(`${step} failed` + (result?.exitCode !== undefined ? ` (exit code ${result.exitCode})` : `: ${result?.message ?? result}`));
+        }
+    }
+
+    async stopStack(name: string, options: any) {
+        const composeOptions = this.stackOptions(name);
+        const services = this.parseServiceList(options.service);
+        console.log(chalk.blue('Stopping deployment...'));
+        await this.runCompose('Stop', () => services
+            ? compose.stopMany(composeOptions, ...services)
+            : compose.stop(composeOptions));
+        console.log(chalk.green('Finished!'));
     }
 
     async restartStack(name: string, options: any) {
-        this.validateName(name);
-        const deploymentDir = Path.join(dockarrDir, name);
+        const composeOptions = this.stackOptions(name);
+        const services = this.parseServiceList(options.service);
         console.log(chalk.blue('Restarting deployment...'));
-        const files = fs.readdirSync(dockarrDir, {withFileTypes: true, encoding: 'utf-8'});
-        for (let i = 0; i < files.length; i++) {
-            if (files[i].name === name) {
-                if (options.service !== undefined) {
-                    await compose.restartMany(options.service.split(','), {
-                        cwd: deploymentDir,
-                        config: [name + ".yaml"],
-                        log: true
-                    }).then(
-                        () => console.log(chalk.green('Finished!')),
-                        err => console.log('something went wrong:', err.message)
-                    );
-                } else {
-                    await compose.restartAll({cwd: deploymentDir, config: [name + ".yaml"], log: true}).then(
-                        () => console.log(chalk.green('Finished!')),
-                        err => console.log('something went wrong:', err.message)
-                    );
-                }
-                return;
-            }
-        }
+        await this.runCompose('Restart', () => services
+            ? compose.restartMany(services, composeOptions)
+            : compose.restartAll(composeOptions));
+        console.log(chalk.green('Finished!'));
     }
 
     async updateStack(name: string, options: any) {
-        this.validateName(name);
-        const deploymentDir = Path.join(dockarrDir, name);
-        console.log(chalk.blue('Updating deployment...'));
-        const files = fs.readdirSync(dockarrDir, {withFileTypes: true, encoding: 'utf-8'});
-        for (let i = 0; i < files.length; i++) {
-            if (files[i].name === name) {
-                if (options.service !== undefined) {
-                    await compose.stopMany({
-                        cwd: deploymentDir,
-                        config: [name + ".yaml"],
-                        log: true
-                    }, options.service.split(',')).then(
-                        () => console.log(chalk.green('Stopped services!')),
-                        err => console.log('something went wrong:', err.message)
-                    );
-                    await compose.pullMany(options.service.split(','), {
-                        cwd: deploymentDir,
-                        config: [name + ".yaml"],
-                        log: true
-                    }).then(
-                        () => console.log(chalk.green('Update complete!')),
-                        err => console.log('something went wrong:', err.message)
-                    );
-                    await compose.upMany(options.service.split(','), {
-                        cwd: deploymentDir,
-                        config: [name + ".yaml"],
-                        log: true
-                    }).then(
-                        () => console.log(chalk.green('Finished!')),
-                        err => console.log('something went wrong:', err.message)
-                    );
-                } else {
-                    await compose.stop({cwd: deploymentDir, config: [name + ".yaml"], log: true}).then(
-                        () => console.log(chalk.green('Stopped services!')),
-                        err => console.log('something went wrong:', err.message)
-                    );
-                    await compose.pullAll({cwd: deploymentDir, config: [name + ".yaml"], log: true}).then(
-                        () => console.log(chalk.green('Finished!')),
-                        err => console.log('something went wrong:', err.message)
-                    );
-                    await compose.upAll({cwd: deploymentDir, config: [name + ".yaml"], log: true}).then(
-                        () => console.log(chalk.green('Finished!')),
-                        err => console.log('something went wrong:', err.message)
-                    );
-                }
-                return;
-            }
-        }
+        const composeOptions = this.stackOptions(name);
+        const services = this.parseServiceList(options.service);
+        // Pull while services keep running; "up" then only recreates containers whose image changed.
+        console.log(chalk.blue('Pulling new images...'));
+        await this.runCompose('Pull', () => services
+            ? compose.pullMany(services, composeOptions)
+            : compose.pullAll(composeOptions));
+        console.log(chalk.blue('Restarting updated services...'));
+        await this.runCompose('Start', () => services
+            ? compose.upMany(services, composeOptions)
+            : compose.upAll(composeOptions));
+        console.log(chalk.green('Finished!'));
     }
 
-    async deleteStack(name: string) {
-        this.validateName(name);
-        const deploymentDir = Path.join(dockarrDir, name);
-        console.log(chalk.blue('Stopping deployment...'));
-        const files = fs.readdirSync(dockarrDir, {withFileTypes: true, encoding: 'utf-8'});
-        for (let i = 0; i < files.length; i++) {
-            if (files[i].name === name) {
-                await compose.down({cwd: deploymentDir, config: [name + ".yaml"], log: true}).then(
-                    () => {
-                        fs.rmSync(deploymentDir, {recursive: true})
-                        console.log(chalk.green('Finished!'));
-                    },
-                    err => console.log('something went wrong:', err.message)
-                );
+    async deleteStack(name: string, options: any) {
+        const composeOptions = this.stackOptions(name);
+        if (!options.yes) {
+            const answer = await this.ask(`Stop and remove all containers in "${name}"? Media and config files are kept. [y/N]> `);
+            if (answer.trim().toLowerCase() !== 'y') {
+                console.log(chalk.yellow('Aborted.'));
                 return;
             }
         }
+        console.log(chalk.blue('Removing deployment...'));
+        await this.runCompose('Remove', () => compose.down(composeOptions));
+        fs.rmSync(composeOptions.cwd!, {recursive: true});
+        console.log(chalk.green('Finished!'));
     }
 
     async startStack(name: string, options: any) {
-        this.validateName(name);
-        const deploymentDir = Path.join(dockarrDir, name);
+        const composeOptions = this.stackOptions(name);
+        const services = this.parseServiceList(options.service);
         console.log(chalk.blue('Starting deployment...'));
+        await this.runCompose('Start', () => services
+            ? compose.upMany(services, composeOptions)
+            : compose.upAll(composeOptions));
+        console.log(chalk.green('Finished!'));
+    }
 
-        if (options.service !== undefined) {
-            compose.upMany(options.service.split(','), {
-                cwd: deploymentDir,
-                config: [name + ".yaml"],
-                log: true,
-                commandOptions: ['-p ' + name]
-            })
-                .then(
-                    () => console.log(chalk.green('Finished!')),
-                    err => console.log('something went wrong:', err.message)
-                );
-        } else {
-            compose.upAll({cwd: deploymentDir, config: [name + ".yaml"], log: true})
-                .then(
-                    () => console.log(chalk.green('Finished!')),
-                    err => console.log('something went wrong:', err.message)
-                );
+    private rl?: readline.Interface;
+    private lines?: AsyncIterator<string>;
+    private muted = false;
+
+    // One shared reader so piped input (e.g. answers from a script) isn't lost between prompts.
+    async ask(query: string, secret = false): Promise<string> {
+        if (this.lines === undefined) {
+            this.rl = readline.createInterface({input, output});
+            (this.rl as any)._writeToOutput = (text: string) => {
+                if (!this.muted) output.write(text);
+            };
+            this.lines = this.rl[Symbol.asyncIterator]();
         }
+        output.write(query);
+        this.muted = secret;
+        const line = await this.lines.next();
+        this.muted = false;
+        if (secret) output.write('\n');
+        if (line.done) {
+            throw new Error(`No input given for "${query.replace(/>\s*$/, '').trim()}".`);
+        }
+        return line.value;
+    }
+
+    // Like ask(), but doesn't echo what's typed.
+    askSecret(query: string): Promise<string> {
+        return this.ask(query, true);
+    }
+
+    close() {
+        this.rl?.close();
+    }
+
+    // Accepts service names (case-insensitive) or 1-based indexes from the list, comma separated.
+    parseServiceSelection(selection: string): DockerComposeFile[] {
+        const selected: DockerComposeFile[] = [];
+        for (const entry of this.parseServiceList(selection) ?? []) {
+            const index = Number(entry);
+            const service = Number.isInteger(index)
+                ? COMPOSE_FILES[index - 1]
+                : COMPOSE_FILES.find(file => file.name.toLowerCase() === entry.toLowerCase());
+            if (service === undefined) {
+                throw new Error(`Unknown service "${entry}". Available: ${COMPOSE_FILES.map(file => file.name).join(', ')}`);
+            }
+            if (!selected.includes(service)) selected.push(service);
+        }
+        if (selected.length === 0) {
+            throw new Error('No services selected.');
+        }
+        return selected;
     }
 
     async createStack(name: string, options: any) {
         this.validateName(name);
-        await compose.version().then(str => console.log(chalk.blue('Docker Version: ') + str.data.version));
-        let servicesToDeploy: DockerComposeFile[] = [];
+        const deploymentDir = Path.join(dockarrDir, name);
+        if (fs.existsSync(Path.join(deploymentDir, name + '.yaml')) && !options.force) {
+            throw new Error(`Deployment "${name}" already exists. Use --force to overwrite its compose file, or pick another name.`);
+        }
 
-        if (options.services === undefined) {
+        await this.runCompose('Docker check', () =>
+            compose.version().then(str => console.log(chalk.blue('Docker Compose Version: ') + str.data.version)));
+
+        let selection = options.services;
+        if (selection === undefined) {
             console.log(chalk.blue('What services would you like deployed?'));
             COMPOSE_FILES.forEach((file, index) => {
                 console.log(chalk.bgGray((index + 1) + ". " + file.name));
             });
-            console.log(chalk.blueBright('Select as many as you want, value should be comma seperated list of indexes.'));
-
-            // Take user input
-            const rl = readline.createInterface({input, output});
-            const composeFileSelectionInput = await rl.question('Selection> ');
-            rl.close()
-            // From user input, get a list of all compose files to be deployed
-            const selectionArray = composeFileSelectionInput.split(',');
-            for (let string of selectionArray) {
-                if (!isNaN(Number(string))) { // If string is actually number
-                    if ((COMPOSE_FILES.length) >= Number(string)) {
-                        console.log(string)
-                        servicesToDeploy.push(COMPOSE_FILES[Number(string) - 1]);
-                    }
-                } else {
-                    console.log(chalk.red(string + ' is not a number'))
-                }
-            }
-        } else {
-            const selectionArray = options.services.split(',');
-            for (let string of selectionArray) {
-                if (!isNaN(Number(string))) { // If string is actually number
-                    if ((COMPOSE_FILES.length) >= Number(string)) {
-                        servicesToDeploy.push(COMPOSE_FILES[Number(string) - 1]);
-                    }
-                } else {
-                    console.log(chalk.red(string + ' is not a number'));
-                }
-            }
+            console.log(chalk.blueBright('Select as many as you want, as a comma separated list of numbers or names.'));
+            selection = await this.ask('Selection> ');
         }
+        const servicesToDeploy = this.parseServiceSelection(selection);
+        console.log(chalk.blue('Selected: ') + servicesToDeploy.map(file => file.name).join(', '));
 
         let plexClaimInput = options.plexClaim;
-        let plexAdvertisedIp = "";
-        if (options.plexClaim === undefined && this.isComposeSelected("Plex", servicesToDeploy)) {
-            // Ask for Plex Claim
-            console.log(chalk.blueBright('You can get your plex claim at https://plex.tv/claim'));
-            const rl = readline.createInterface({input, output});
-            plexClaimInput = await rl.question('Plex Claim> ');
-            rl.close();
-            plexAdvertisedIp = options.advertisedIp;
+        let plexAdvertisedIp = options.advertisedIp;
+        if (this.isComposeSelected("Plex", servicesToDeploy)) {
+            if (plexClaimInput === undefined) {
+                // Ask for Plex Claim
+                console.log(chalk.blueBright('You can get your plex claim at https://plex.tv/claim'));
+                plexClaimInput = await this.ask('Plex Claim> ');
+            }
 
-            if (options.advertisedIp === undefined || options.advertisedIp === 'auto') {
+            if (plexAdvertisedIp === undefined || plexAdvertisedIp === 'auto') {
                 console.log(chalk.blue('Automatically grabbing your IP...'));
                 plexAdvertisedIp = "http://" + this.getIPAddress() + ":32400";
             }
         }
 
+        let vpnUser = options.vpnUser;
+        let vpnPass = options.vpnPass;
+        if (this.isComposeSelected("Deluge", servicesToDeploy) && options.vpn !== 'false') {
+            if (vpnUser === undefined || vpnPass === undefined) {
+                console.log(chalk.blueBright('Deluge routes traffic through your VPN provider (' + options.vpnProv + '). Use --vpn false to disable.'));
+            }
+            if (vpnUser === undefined) vpnUser = await this.ask('VPN User> ');
+            if (vpnPass === undefined) vpnPass = await this.askSecret('VPN Password> ');
+        }
+
         let baseUrl = options.baseUrl;
-        if (baseUrl === undefined) {
+        if (baseUrl === undefined && this.isComposeSelected("Mealie", servicesToDeploy)) {
             console.log(chalk.blueBright('Please provide your base url domain name: (ex. example.com)'));
-            const rl = readline.createInterface({input, output});
-            baseUrl = await rl.question('BaseUrl> ');
-            rl.close();
+            baseUrl = await this.ask('BaseUrl> ');
         }
 
         // Generate docker-compose manifest
         console.log(chalk.blue('Generating the docker-compose manifest...'));
+        const templateValues: Record<string, string | undefined> = {
+            ConfigDir: options.configDir,
+            WorkDir: options.workDir,
+            DataDir: options.dataDir,
+            PlexClaim: plexClaimInput,
+            DockerSock: options.dockerSock,
+            GUID: options.guid,
+            PUID: options.puid,
+            Timezone: options.timezone,
+            PlexIp: plexAdvertisedIp,
+            VPNEnabled: options.vpn,
+            VPNUser: vpnUser,
+            VPNPass: vpnPass,
+            VPNProv: options.vpnProv,
+            VPNClient: options.vpnClient,
+            VPNNetwork: options.vpnNetwork,
+            DockarrVersion: DOCKARR_VERSION,
+            StackName: name,
+            BaseUrl: baseUrl,
+        };
+
         let composeManifest = new Map();
         for (let dockerComposeFile of servicesToDeploy) {
-            let fileContentStr = dockerComposeFile.file;
-
             if (dockerComposeFile.name === 'Portainer' || dockerComposeFile.name === 'WatchTower') {
-                console.log(chalk.yellow(`Warning: ${dockerComposeFile.name} requires access to the Docker socket ($DockerSock). This gives the container significant control over the host.`));
+                console.log(chalk.yellow(`Warning: ${dockerComposeFile.name} requires access to the Docker socket (${options.dockerSock}). This gives the container significant control over the host.`));
             }
 
-            // Hmmmmmm, not the best eh?
-            fileContentStr = fileContentStr.replace(/\$ConfigDir/g, options.configDir);
-            fileContentStr = fileContentStr.replace(/\$WorkDir/g, options.workDir);
-            fileContentStr = fileContentStr.replace(/\$DataDir/g, options.dataDir);
-            fileContentStr = fileContentStr.replace(/\$PlexClaim/g, plexClaimInput);
-            fileContentStr = fileContentStr.replace(/\$DockerSock/g, options.dockerSock);
-            fileContentStr = fileContentStr.replace(/\$GUID/g, options.guid);
-            fileContentStr = fileContentStr.replace(/\$PUID/g, options.puid);
-            fileContentStr = fileContentStr.replace(/\$Timezone/g, options.timezone);
-            fileContentStr = fileContentStr.replace(/\$PlexIp/g, plexAdvertisedIp);
-            fileContentStr = fileContentStr.replace(/\$VPNEnabled/g, options.vpn);
-            fileContentStr = fileContentStr.replace(/\$VPNUser/g, options.vpnUser);
-            fileContentStr = fileContentStr.replace(/\$VPNPass/g, options.vpnPass);
-            fileContentStr = fileContentStr.replace(/\$VPNProv/g, options.vpnProv);
-            fileContentStr = fileContentStr.replace(/\$VPNClient/g, options.vpnClient);
-            fileContentStr = fileContentStr.replace(/\$VPNNetwork/g, options.vpnNetwork);
-            fileContentStr = fileContentStr.replace(/\$DockarrVersion/g, DOCKARR_VERSION);
-            fileContentStr = fileContentStr.replace(/\$StackName/g, name);
-            fileContentStr = fileContentStr.replace(/\$BaseUrl/g, baseUrl);
-
-            const manifests = JSON.parse(fileContentStr);
-
-            for (let mani of manifests) {
+            for (let mani of this.fillTemplate(dockerComposeFile.services, templateValues)) {
                 composeManifest.set(mani.container_name.toLowerCase(), mani);
             }
         }
 
-        const doc = new YAML.Document({version: "3.3"});
+        const doc = new YAML.Document({});
         doc.commentBefore = 'Generated with <3 by Dockarr on ' + new Date();
         doc.comment = 'EOF';
-        // doc.add(doc.createPair("name", name)); // Does not work with all version of compose...
-        // But the way we organize the files means the folder name will default to the stack name
         doc.add(doc.createPair("services", composeManifest));
         doc.add(doc.createPair("networks", doc.createPair(name, {
                 driver: "bridge",
@@ -330,19 +307,38 @@ export class Dockarr {
 
         // Save File to disk
         console.log(chalk.blue('Saving docker-compose file to disk...'));
-        const deploymentDir = Path.join(dockarrDir, name);
 
         if (!fs.existsSync(deploymentDir)) {
             console.log(chalk.blue('Creating .dockarr directory...'));
-            fs.mkdirSync(deploymentDir, {recursive: true});
+            fs.mkdirSync(deploymentDir, {recursive: true, mode: 0o700});
         }
 
-        await fs.writeFile(Path.join(deploymentDir, name + '.yaml'), String(doc), function (err: any) {
-            if (err) {
-                return console.error(err);
-            }
-            console.log(chalk.green('Successfully saved docker-compose manifest!'));
-        });
+        // The manifest holds secrets (Plex claim, VPN credentials), so keep it owner-only.
+        // chmod covers stacks created before this, since mode only applies to new files.
+        const manifestPath = Path.join(deploymentDir, name + '.yaml');
+        fs.writeFileSync(manifestPath, String(doc), {mode: 0o600});
+        fs.chmodSync(manifestPath, 0o600);
+        fs.chmodSync(deploymentDir, 0o700);
+        console.log(chalk.green('Successfully saved docker-compose manifest!'));
+        console.log(chalk.blueBright('Start it with: ') + chalk.white('dockarr start ' + name));
+    }
+
+    // Recursively replace $Token placeholders in a compose template. Works on the objects
+    // directly so values never need JSON escaping (e.g. Windows paths, quotes in passwords).
+    // "$" in values is doubled, compose's escape for a literal dollar sign.
+    fillTemplate(template: any, values: Record<string, string | undefined>): any {
+        if (typeof template === 'string') {
+            return template.replace(/\$([A-Za-z]+)/g, (match, key) =>
+                key in values ? (values[key] ?? '').replace(/\$/g, '$$$$') : match);
+        }
+        if (Array.isArray(template)) {
+            return template.map(item => this.fillTemplate(item, values));
+        }
+        if (template !== null && typeof template === 'object') {
+            return Object.fromEntries(Object.entries(template)
+                .map(([key, value]) => [this.fillTemplate(key, values), this.fillTemplate(value, values)]));
+        }
+        return template;
     }
 
     async getApiKeys() {

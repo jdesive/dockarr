@@ -1,13 +1,9 @@
 #!/usr/bin/env node
 
 import {Command} from "commander";
-import * as Path from "path";
-import * as os from "os";
-import {version} from '../package.json';
 import {Dockarr} from "./Dockarr";
-
-export const DOCKARR_VERSION = version;
-export const dockarrDir = Path.join(os.homedir(), ".dockarr");
+import {DOCKARR_VERSION} from "./constants";
+import chalk from "chalk";
 
 export const dockarr = new Dockarr();
 
@@ -26,7 +22,7 @@ async function run() {
     dockarrCommand.command('create')
         .description('Creates a deployment from console input')
         .argument('<name>', 'The Name for the Dockarr deployment')
-        .option('-s, --services [services]', 'Comma seperated list of services to deploy')
+        .option('-s, --services [services]', 'Comma separated list of service names or numbers to deploy (e.g. plex,sonarr,radarr)')
         .option('-p, --plex-claim [plexClaim]', 'Plex TV claim (https://plex.tv/claim)')
         .option('--docker-sock [dockerSockFile]', 'docker.sock location', '/var/run/docker.sock')
         .option('--guid [guid]', 'Group ID', '1000')
@@ -34,8 +30,8 @@ async function run() {
         .option('--timezone [timezone]', 'Timezone', 'America/Chicago')
         .option('--advertised-ip [advertisedIp]', 'Plex Advertised IP (default: auto)')
         .option('--vpn [vpn]', 'Deluge VPN Enabled', "true")
-        .option('--vpn-user [vpnUser]', 'Deluge VPN User', "anonymous")
-        .option('--vpn-pass [vpnPass]', 'Deluge VPN Password', "anonymous")
+        .option('--vpn-user [vpnUser]', 'Deluge VPN User (prompted if not given)')
+        .option('--vpn-pass [vpnPass]', 'Deluge VPN Password (prompted if not given; avoid passing on the command line)')
         .option('--vpn-prov [vpnProv]', 'Deluge VPN Provider', "pia")
         .option('--vpn-client [vpnClient]', 'Deluge VPN Client', "openvpn")
         .option('--vpn-network [vpnNetwork]', 'Deluge VPN Network', "192.168.1.0/24")
@@ -43,12 +39,13 @@ async function run() {
         .requiredOption('-c, --config-dir [configDir]', 'Configuration file parent directory full path')
         .requiredOption('-d, --data-dir [dataDir]', 'Data directory full path where the media libraries are located')
         .requiredOption('-w, --work-dir [workDir]', 'Working directory where files are temporarily stored')
+        .option('-f, --force', 'Overwrite the compose file of an existing deployment')
         .action(async (name, options) => dockarr.createStack(name, options));
 
     dockarrCommand.command("start")
         .description("Start all or specific containers in a deployment")
         .argument('<name>', "Name of the dockarr stack to start")
-        .option('-s, --service [service]', "Only stop one or more service in the deployment")
+        .option('-s, --service [service]', "Only start one or more service in the deployment")
         .action(async (name, options) => dockarr.startStack(name, options));
 
     dockarrCommand.command("list")
@@ -64,7 +61,8 @@ async function run() {
     dockarrCommand.command("remove")
         .description("Remove all containers in a deployment")
         .argument('<name>', 'Name of Dockarr deployment to remove')
-        .action(async (name) => dockarr.deleteStack(name));
+        .option('-y, --yes', 'Skip the confirmation prompt')
+        .action(async (name, options) => dockarr.deleteStack(name, options));
 
     dockarrCommand.command("restart")
         .description("Restart all or specific containers in a deployment")
@@ -87,8 +85,10 @@ async function run() {
         .description('Get the *arr api keys of the installed services')
         .action(async () => dockarr.getApiKeys());
 
-    dockarrCommand
-        .parse()
+    await dockarrCommand.parseAsync();
 }
 
-run()
+run().catch(err => {
+    console.error(chalk.red(err instanceof Error ? err.message : String(err)));
+    process.exitCode = 1;
+}).finally(() => dockarr.close());

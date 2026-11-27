@@ -68,7 +68,7 @@ Ubuntu 22.04 +
 Windows 10 +
 
 ### Installing
-You must have [Node.JS](https://nodejs.org/en) & [NPM](https://www.npmjs.com/) installed.  
+You must have [Node.JS](https://nodejs.org/en) & [NPM](https://www.npmjs.com/) installed, plus Docker with the Compose plugin (`docker compose`). You can install Docker with `dockarr install docker`.  
 To install dockarr run the following command:  
 `npm install -g dockarr`
 
@@ -76,25 +76,26 @@ You can now see the command options with `dockarr --help`
 
 ### Starting the Stack
 To create your first stack/deployment you will run the `dockarr create [options] <name>` command and supply your settings when asked. 
+Services can be picked by name or by their number in the list, e.g. `-s plex,sonarr,radarr`. If you pick Deluge you will be asked for your VPN login (or pass `--vpn false`).
 
 If you want to quick start you can copy the command below:  
-Linux: `dockarr create -c /opt/htpc -d /mnt/Media -w /opt/htpc/tmp -s 1,2,3,6,8,9,11,13,14 my-first-dockarr`  
-Windows: `dockarr create -c ./htpc -d ./Media -w ./htpc/tmp -s 1,2,3,6,8,9,11,13,14 my-first-dockarr`
+Linux: `dockarr create -c /opt/htpc -d /mnt/Media -w /opt/htpc/tmp -s plex,sonarr,radarr,bazarr,prowlarr,seerr,tautulli,sabnzbd,deluge my-first-dockarr`  
+Windows: `dockarr create -c ./htpc -d ./Media -w ./htpc/tmp -s plex,sonarr,radarr,bazarr,prowlarr,seerr,tautulli,sabnzbd,deluge my-first-dockarr`
+
+`create` only writes the compose file. Start the stack with `dockarr start my-first-dockarr`. To change an existing deployment, re-run `create` with `--force`.
 
 Now you can move to configuring the individual services via the links above in *Service Links* section below.
 
 ### Updating the stack
 In order to update the stack (pull new docker images and restart services), you can run `dockarr update <name>`. 
-This will stop all services, update this repo, pull down new docker images if available and restart the services to bring them back up.
-
-Note: This will cause downtime for your HTPC, no services will be running during this process. 
+This pulls new docker images while your services keep running, then recreates only the containers whose image changed. Use `-s` to update specific services.
 
 ### Stopping the stack
 To stop the stack you can run `dockarr stop <name>`. This will simply just stop all the services, you can then simply 
 run `dockarr start <name>` again to start the stack back up.
 
 ### Deleting the stack
-To delete the stack you just need to run `dockarr remove <name>`. This will stop and remove all services.
+To delete the stack you just need to run `dockarr remove <name>`. This will stop and remove all services after asking for confirmation (skip it with `-y`).
 
 Note: This does not remove media or configuration files for the HTPC.
 
@@ -141,6 +142,7 @@ simply with wanting an easily deployable and producible script for Plex and comp
 While Dockarr aims to simplify deployment, it is important to follow security best practices:
 - **Docker Socket**: Services like Portainer and Watchtower require access to `/var/run/docker.sock`. This provides the container with near-root access to the host machine. Only use these services if you trust them and understand the risks.
 - **Insecure Connections**: By default, many services are exposed over plain HTTP. It is highly recommended to use a reverse proxy (like the included Nginx Proxy Manager) with SSL/TLS for all external access.
+- **Secrets**: The generated compose file (`~/.dockarr/<name>/<name>.yaml`) contains your Plex claim and VPN credentials, so Dockarr makes it readable only by your user. Note that anyone with access to Docker can still read container environment variables via `docker inspect`.
 - **API Keys**: Commands like `get-api-keys` fetch information over plain HTTP within your network. Ensure your local network is secure.
 - **Image Versions**: Dockarr currently uses `:latest` tags for ease of use and updates. For production environments, consider pinning to specific versions or digests in the generated compose files for better reproducibility.
 
@@ -168,6 +170,10 @@ There are 3 main parent directories created by this repository. You can configur
 ### Service Config
 Services are left to set up however you choose via their UI as listed in *Service Links* section. However, there are some 
 helper commands for you ex. (`dockarr get-api-keys`)
+
+## Development
+- `npm run build` compiles to `bin/`; run the CLI locally with `node bin/src/cli.js`.
+- `npm test` runs the unit tests in `test/` (requires Node 21+). They also check every compose template for unknown placeholders, missing PGID, duplicate container names and host port conflicts, so run them after adding a service.
 
 ## Disclaimer
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
