@@ -255,16 +255,17 @@ export class Dockarr {
         }
 
         let plexClaimInput = options.plexClaim;
-        let plexAdvertisedIp = "";
-        if (options.plexClaim === undefined && this.isComposeSelected("Plex", servicesToDeploy)) {
-            // Ask for Plex Claim
-            console.log(chalk.blueBright('You can get your plex claim at https://plex.tv/claim'));
-            const rl = readline.createInterface({input, output});
-            plexClaimInput = await rl.question('Plex Claim> ');
-            rl.close();
-            plexAdvertisedIp = options.advertisedIp;
+        let plexAdvertisedIp = options.advertisedIp;
+        if (this.isComposeSelected("Plex", servicesToDeploy)) {
+            if (plexClaimInput === undefined) {
+                // Ask for Plex Claim
+                console.log(chalk.blueBright('You can get your plex claim at https://plex.tv/claim'));
+                const rl = readline.createInterface({input, output});
+                plexClaimInput = await rl.question('Plex Claim> ');
+                rl.close();
+            }
 
-            if (options.advertisedIp === undefined || options.advertisedIp === 'auto') {
+            if (plexAdvertisedIp === undefined || plexAdvertisedIp === 'auto') {
                 console.log(chalk.blue('Automatically grabbing your IP...'));
                 plexAdvertisedIp = "http://" + this.getIPAddress() + ":32400";
             }
@@ -280,37 +281,34 @@ export class Dockarr {
 
         // Generate docker-compose manifest
         console.log(chalk.blue('Generating the docker-compose manifest...'));
+        const templateValues: Record<string, string | undefined> = {
+            ConfigDir: options.configDir,
+            WorkDir: options.workDir,
+            DataDir: options.dataDir,
+            PlexClaim: plexClaimInput,
+            DockerSock: options.dockerSock,
+            GUID: options.guid,
+            PUID: options.puid,
+            Timezone: options.timezone,
+            PlexIp: plexAdvertisedIp,
+            VPNEnabled: options.vpn,
+            VPNUser: options.vpnUser,
+            VPNPass: options.vpnPass,
+            VPNProv: options.vpnProv,
+            VPNClient: options.vpnClient,
+            VPNNetwork: options.vpnNetwork,
+            DockarrVersion: DOCKARR_VERSION,
+            StackName: name,
+            BaseUrl: baseUrl,
+        };
+
         let composeManifest = new Map();
         for (let dockerComposeFile of servicesToDeploy) {
-            let fileContentStr = dockerComposeFile.file;
-
             if (dockerComposeFile.name === 'Portainer' || dockerComposeFile.name === 'WatchTower') {
-                console.log(chalk.yellow(`Warning: ${dockerComposeFile.name} requires access to the Docker socket ($DockerSock). This gives the container significant control over the host.`));
+                console.log(chalk.yellow(`Warning: ${dockerComposeFile.name} requires access to the Docker socket (${options.dockerSock}). This gives the container significant control over the host.`));
             }
 
-            // Hmmmmmm, not the best eh?
-            fileContentStr = fileContentStr.replace(/\$ConfigDir/g, options.configDir);
-            fileContentStr = fileContentStr.replace(/\$WorkDir/g, options.workDir);
-            fileContentStr = fileContentStr.replace(/\$DataDir/g, options.dataDir);
-            fileContentStr = fileContentStr.replace(/\$PlexClaim/g, plexClaimInput);
-            fileContentStr = fileContentStr.replace(/\$DockerSock/g, options.dockerSock);
-            fileContentStr = fileContentStr.replace(/\$GUID/g, options.guid);
-            fileContentStr = fileContentStr.replace(/\$PUID/g, options.puid);
-            fileContentStr = fileContentStr.replace(/\$Timezone/g, options.timezone);
-            fileContentStr = fileContentStr.replace(/\$PlexIp/g, plexAdvertisedIp);
-            fileContentStr = fileContentStr.replace(/\$VPNEnabled/g, options.vpn);
-            fileContentStr = fileContentStr.replace(/\$VPNUser/g, options.vpnUser);
-            fileContentStr = fileContentStr.replace(/\$VPNPass/g, options.vpnPass);
-            fileContentStr = fileContentStr.replace(/\$VPNProv/g, options.vpnProv);
-            fileContentStr = fileContentStr.replace(/\$VPNClient/g, options.vpnClient);
-            fileContentStr = fileContentStr.replace(/\$VPNNetwork/g, options.vpnNetwork);
-            fileContentStr = fileContentStr.replace(/\$DockarrVersion/g, DOCKARR_VERSION);
-            fileContentStr = fileContentStr.replace(/\$StackName/g, name);
-            fileContentStr = fileContentStr.replace(/\$BaseUrl/g, baseUrl);
-
-            const manifests = JSON.parse(fileContentStr);
-
-            for (let mani of manifests) {
+            for (let mani of this.fillTemplate(dockerComposeFile.services, templateValues)) {
                 composeManifest.set(mani.container_name.toLowerCase(), mani);
             }
         }
@@ -334,15 +332,34 @@ export class Dockarr {
 
         if (!fs.existsSync(deploymentDir)) {
             console.log(chalk.blue('Creating .dockarr directory...'));
-            fs.mkdirSync(deploymentDir, {recursive: true});
+            fs.mkdirSync(deploymentDir, {recursive: true, mode: 0o700});
         }
 
-        await fs.writeFile(Path.join(deploymentDir, name + '.yaml'), String(doc), function (err: any) {
-            if (err) {
-                return console.error(err);
-            }
-            console.log(chalk.green('Successfully saved docker-compose manifest!'));
-        });
+        // The manifest holds secrets (Plex claim, VPN credentials), so keep it owner-only.
+        // chmod covers stacks created before this, since mode only applies to new files.
+        const manifestPath = Path.join(deploymentDir, name + '.yaml');
+        fs.writeFileSync(manifestPath, String(doc), {mode: 0o600});
+        fs.chmodSync(manifestPath, 0o600);
+        fs.chmodSync(deploymentDir, 0o700);
+        console.log(chalk.green('Successfully saved docker-compose manifest!'));
+    }
+
+    // Recursively replace $Token placeholders in a compose template. Works on the objects
+    // directly so values never need JSON escaping (e.g. Windows paths, quotes in passwords).
+    // "$" in values is doubled, compose's escape for a literal dollar sign.
+    fillTemplate(template: any, values: Record<string, string | undefined>): any {
+        if (typeof template === 'string') {
+            return template.replace(/\$([A-Za-z]+)/g, (match, key) =>
+                key in values ? (values[key] ?? '').replace(/\$/g, '$$$$') : match);
+        }
+        if (Array.isArray(template)) {
+            return template.map(item => this.fillTemplate(item, values));
+        }
+        if (template !== null && typeof template === 'object') {
+            return Object.fromEntries(Object.entries(template)
+                .map(([key, value]) => [this.fillTemplate(key, values), this.fillTemplate(value, values)]));
+        }
+        return template;
     }
 
     async getApiKeys() {
