@@ -6,7 +6,7 @@ import * as compose from "docker-compose";
 import readline from "node:readline/promises";
 import {stdin as input, stdout as output} from "process";
 import * as YAML from "yaml";
-import {DOCKARR_VERSION, dockarrDir} from "./cli";
+import {DOCKARR_VERSION, dockarrDir} from "./constants";
 import axios from "axios";
 import os from "os";
 import {execSync} from "child_process";

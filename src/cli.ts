@@ -1,14 +1,9 @@
 #!/usr/bin/env node
 
 import {Command} from "commander";
-import * as Path from "path";
-import * as os from "os";
-import {version} from '../package.json';
 import {Dockarr} from "./Dockarr";
+import {DOCKARR_VERSION} from "./constants";
 import chalk from "chalk";
-
-export const DOCKARR_VERSION = version;
-export const dockarrDir = Path.join(os.homedir(), ".dockarr");
 
 export const dockarr = new Dockarr();
 

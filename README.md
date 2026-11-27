@@ -171,5 +171,9 @@ There are 3 main parent directories created by this repository. You can configur
 Services are left to set up however you choose via their UI as listed in *Service Links* section. However, there are some 
 helper commands for you ex. (`dockarr get-api-keys`)
 
+## Development
+- `npm run build` compiles to `bin/`; run the CLI locally with `node bin/src/cli.js`.
+- `npm test` runs the unit tests in `test/` (requires Node 21+). They also check every compose template for unknown placeholders, missing PGID, duplicate container names and host port conflicts, so run them after adding a service.
+
 ## Disclaimer
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
