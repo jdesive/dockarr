@@ -8,8 +8,8 @@ import {stdin as input, stdout as output} from "process";
 import * as YAML from "yaml";
 import {DOCKARR_VERSION, dockarrDir} from "./constants";
 import axios from "axios";
-import os from "os";
-import {execSync} from "child_process";
+
+const DOCKER_REQUIRED = 'Dockarr needs Docker with the Compose plugin (v2 or later). Install it from https://docs.docker.com/get-docker/ and check that "docker compose version" works.';
 
 export class Dockarr {
 
@@ -82,6 +82,25 @@ export class Dockarr {
         return service?.split(',').map(s => s.trim()).filter(s => s !== '');
     }
 
+    // Docker with the Compose plugin is a prerequisite; Dockarr doesn't install it.
+    async checkDocker() {
+        let version: string;
+        try {
+            version = (await compose.version()).data.version;
+        } catch (result: any) {
+            throw new Error(DOCKER_REQUIRED + (result?.code === 'ENOENT' ? '' : ` ("docker compose version" failed: ${result?.err?.trim() || result?.message || result})`));
+        }
+        this.assertComposeVersion(version);
+        console.log(chalk.blue('Docker Compose Version: ') + version);
+    }
+
+    assertComposeVersion(version: string) {
+        const major = Number(/^v?(\d+)\./.exec(version.trim())?.[1]);
+        if (!(major >= 2)) {
+            throw new Error(`${DOCKER_REQUIRED} Found Compose version "${version}".`);
+        }
+    }
+
     // docker-compose rejects with {exitCode, err} rather than an Error; its output is already
     // streamed to the console (log: true), so only report which step failed.
     async runCompose(step: string, action: () => Promise<unknown>) {
@@ -89,7 +108,7 @@ export class Dockarr {
             await action();
         } catch (result: any) {
             if (result?.code === 'ENOENT') {
-                throw new Error('Docker was not found. Install it with "dockarr install docker" and make sure "docker compose" works.');
+                throw new Error(DOCKER_REQUIRED);
             }
             throw new Error(`${step} failed` + (result?.exitCode !== undefined ? ` (exit code ${result.exitCode})` : `: ${result?.message ?? result}`));
         }
@@ -214,8 +233,7 @@ export class Dockarr {
             throw new Error(`Deployment "${name}" already exists. Use --force to overwrite its compose file, or pick another name.`);
         }
 
-        await this.runCompose('Docker check', () =>
-            compose.version().then(str => console.log(chalk.blue('Docker Compose Version: ') + str.data.version)));
+        await this.checkDocker();
 
         let selection = options.services;
         if (selection === undefined) {
@@ -361,67 +379,6 @@ export class Dockarr {
             } catch (error) {
                 console.log(chalk.yellow('Service ' + service.name + ' cannot be reached'))
             }
-        }
-    }
-
-    async install(serviceName: string) {
-        switch (os.type()) {
-            case "Linux":
-                switch (serviceName.toLowerCase()) {
-                    case "plex":
-                        execSync('sudo snap install plex-desktop', {stdio: 'inherit'});
-                        break;
-                    case "plexmediaserver":
-                        execSync('sudo apt-get install plexmediaserver', {stdio: 'inherit'});
-                        break;
-                    case "steam":
-                        execSync('sudo add-apt-repository multiverse && sudo apt-get update && sudo apt-get install steam', {stdio: 'inherit'});
-                        break;
-                    case "spotify":
-                        execSync('sudo snap install spotify', {stdio: 'inherit'});
-                        break;
-                    case "tidal":
-                        execSync('sudo snap install tidal', {stdio: 'inherit'});
-                        break;
-                    case "docker":
-                        console.log(chalk.blue('Installing Docker using the official convenience script...'));
-                        execSync('curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh', {stdio: 'inherit'});
-                        console.log(chalk.blue('Post-installation steps: Adding user to docker group...'));
-                        execSync('sudo usermod -aG docker $USER', {stdio: 'inherit'});
-                        console.log(chalk.green('Docker installed successfully! You may need to log out and back in for group changes to take effect.'));
-                        break;
-                    default:
-                        console.log(chalk.red('Unknown package'));
-                        break;
-                }
-                break;
-            case "Windows_NT":
-                switch (serviceName.toLowerCase()) {
-                    case "plex":
-                        execSync('winget install -e --id Plex.Plex', {stdio: 'inherit'});
-                        break;
-                    case "plexmediaserver":
-                        execSync('winget install -e --id Plex.PlexMediaServer', {stdio: 'inherit'});
-                        break;
-                    case "steam":
-                        execSync('winget install -e --id Valve.Steam', {stdio: 'inherit'});
-                        break;
-                    case "spotify":
-                        execSync('winget install -e --id Spotify.Spotify', {stdio: 'inherit'});
-                        break;
-                    case "docker":
-                        execSync('winget install -e --id Docker.DockerDesktop', {stdio: 'inherit'});
-                        break;
-                    case "tidal":
-                        execSync('winget install -e --id TIDALMusicAS.TIDAL', {stdio: 'inherit'});
-                        break;
-                    default:
-                        console.log(chalk.red('Unknown package'));
-                        break;
-                }
-                break;
-            default:
-                break;
         }
     }
 

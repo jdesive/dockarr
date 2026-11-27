@@ -17,7 +17,6 @@ improper or illegal use of this repository, it is provided for educational purpo
 
 ## Available Services
 
-### Docker
 - **[Plex](https://plex.tv)**: Plex is a one-stop destination to stream movies, tv shows, sports & music
 - **[Unmanic](https://github.com/Unmanic/unmanic)**: Unmanic is a simple tool for optimising your file library  
 - **[Tautulli](https://tautulli.com/)**: Tautulli is a 3rd party application that you can run alongside your Plex Media Server to monitor activity and track various statistics  
@@ -43,15 +42,6 @@ improper or illegal use of this repository, it is provided for educational purpo
 - **[Jellyfin](https://jellyfin.org/)**: Jellyfin is the volunteer-built media solution that puts you in control of your media. Stream to any device from your own server, with no strings attached. Your media, your server, your way.
 - **[Tunarr](https://github.com/chrisbenincasa/tunarr)**: Tunarr lets you build custom live TV channels out of your existing media libraries — movies, TV episodes, music videos, or local files — and stream them as if they were real broadcast channels.
 
-### Operating System
-*Installed via `dockarr install <package name>`*
-- **[Plex Desktop](https://www.plex.tv/media-server-downloads/#plex-app)** | `plex`: Plex desktop client.
-- **[Plex Media Server](https://www.plex.tv/media-server-downloads/#plex-media-server)** | `plexmediaserver`: Plex media server (In case you don't want to run it in docker).
-- **[Spotify](https://open.spotify.com/)** | `spotify`: Spotify is a digital music service that gives you access to millions of songs.
-- **[Steam](https://store.steampowered.com/)** | `steam`: Steam is the ultimate destination for playing, discussing, and creating games.
-- **[Tidal](https://tidal.com/)** | `tidal`: TIDAL is an artist-first, fan-centered music streaming platform that delivers over 100 million songs in HiFi sound quality to the global music community.
-- **[Docker](https://www.docker.com/)** | `docker`: Docker is a platform designed to help developers build, share, and run modern applications. (Note: On Linux, this uses the official Docker convenience script from `get.docker.com`)
-
 ## Getting started
 
 ### Recommended Operating System
@@ -59,7 +49,12 @@ Ubuntu 22.04 +
 Windows 10 +
 
 ### Installing
-You must have [Node.JS](https://nodejs.org/en) & [NPM](https://www.npmjs.com/) installed, plus Docker with the Compose plugin (`docker compose`). You can install Docker with `dockarr install docker`.  
+Dockarr needs:
+- [Node.js](https://nodejs.org/en) 22 or later, with npm
+- [Docker](https://docs.docker.com/get-docker/) with the Compose plugin v2 (`docker compose version` must work). On Linux install [Docker Engine](https://docs.docker.com/engine/install/); on Windows install [Docker Desktop](https://docs.docker.com/desktop/setup/install/windows-install/).
+
+Dockarr doesn't install Docker or any other software for you; `create` stops with an error if Docker Compose isn't found.  
+
 To install dockarr run the following command:  
 `npm install -g dockarr`
 

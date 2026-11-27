@@ -87,6 +87,20 @@ describe("validateName", () => {
     });
 });
 
+describe("assertComposeVersion", () => {
+    it("accepts Compose v2 and later", () => {
+        for (const version of ["2.20.2", "v2.29.7", "2.40.3-desktop.1", "5.0.0\n"]) {
+            assert.doesNotThrow(() => dockarr.assertComposeVersion(version), version);
+        }
+    });
+
+    it("rejects Compose v1 and unparseable versions", () => {
+        for (const version of ["1.29.2", "", "unknown"]) {
+            assert.throws(() => dockarr.assertComposeVersion(version), /Compose plugin \(v2 or later\)/, version);
+        }
+    });
+});
+
 describe("stackOptions", () => {
     it("throws a helpful error for a deployment that doesn't exist", () => {
         assert.throws(() => dockarr.stackOptions("no-such-stack-" + process.pid), /not found/);

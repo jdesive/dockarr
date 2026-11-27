@@ -76,10 +76,6 @@ async function run() {
         .option('-s, --service [service]', "Only update one or more service in the deployment")
         .action(async (name, options) => dockarr.updateStack(name, options));
 
-    dockarrCommand.command("install")
-        .description('Install software related to HTPC')
-        .argument('<package>')
-        .action(async (packageStr) => dockarr.install(packageStr));
 
     dockarrCommand.command("get-api-keys")
         .description('Get the *arr api keys of the installed services')
